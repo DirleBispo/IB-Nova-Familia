@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#49b653">
+  <meta name="theme-color" content="#0f55b5">
   <title>IB Nova Família</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
@@ -11,50 +11,123 @@
 <body>
   <header class="app-header">
     <div class="brand">
-      <div class="logo-circle">NF</div>
-      <div>
+      <div class="logo-mark">NF</div>
+      <div class="brand-copy">
         <small>Igreja Batista</small>
         <strong>Nova Família</strong>
       </div>
     </div>
-    <button id="installBtn" class="install-btn" hidden>Instalar</button>
+    <div class="header-actions">
+      <button class="icon-btn" data-view="notificacoes" aria-label="Avisos">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+      </button>
+      <button id="installBtn" class="install-btn" hidden>Instalar</button>
+    </div>
   </header>
 
   <main class="app-main">
-    <section class="welcome-card">
-      <div>
-        <span class="welcome-label">Bem-vindo</span>
-        <h1>IB Nova Família</h1>
-        <p>Conectando pessoas, ministérios e informações da igreja.</p>
+    <section class="hero-card">
+      <div class="hero-topline">
+        <span class="status-pill"><i></i> Aplicativo oficial</span>
+        <span class="hero-date">IBNF</span>
+      </div>
+      <div class="hero-content">
+        <div>
+          <p class="eyebrow">Bem-vindo à</p>
+          <h1>IB Nova Família</h1>
+          <p class="hero-text">Um só lugar para acompanhar a vida, os ministérios e a comunicação da igreja.</p>
+        </div>
+        <div class="hero-symbol" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><path d="M8 34 32 12l24 22M17 31v22h30V31M24 53V37h16v16"/></svg>
+        </div>
       </div>
     </section>
 
-    <section class="module-grid" id="moduleGrid">
-      <button class="module-card" data-view="pessoas"><span class="icon">👥</span><span>Pessoas</span></button>
-      <button class="module-card" data-view="departamentos"><span class="icon">🧩</span><span>Departamentos</span><em class="new-badge">Novo</em></button>
-      <button class="module-card" data-view="grupos"><span class="icon">▦</span><span>Grupos</span></button>
-      <button class="module-card" data-view="financeiro"><span class="icon">💵</span><span>Financeiro</span></button>
-      <button class="module-card" data-view="estudos"><span class="icon">📄</span><span>Estudos</span></button>
-      <button class="module-card" data-view="kids"><span class="icon">🙂</span><span>Kids</span><em class="new-badge">Novo</em></button>
-      <button class="module-card" data-view="aniversariantes"><span class="icon">🎁</span><span>Aniversariantes</span></button>
-      <button class="module-card" data-view="fotos"><span class="icon">📷</span><span>Fotos</span></button>
-      <button class="module-card" data-view="videos"><span class="icon">🎥</span><span>Vídeos</span></button>
-      <button class="module-card" data-view="arquivos"><span class="icon">🗂️</span><span>Arquivos</span></button>
-      <button class="module-card" data-view="oracao"><span class="icon">🙏</span><span>Oração</span></button>
-      <button class="module-card" data-view="visitas"><span class="icon">🏠</span><span>Visitas</span></button>
+    <section class="section-block">
+      <div class="section-heading">
+        <div><span class="section-kicker">Acesso rápido</span><h2>Serviços da igreja</h2></div>
+      </div>
+
+      <div class="module-grid" id="moduleGrid">
+        <button class="module-card" data-view="pessoas">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <span class="module-copy"><strong>Pessoas</strong><small>Membros e visitantes</small></span>
+          <span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="departamentos">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 3v6M5 21v-6h14v6M5 15v-3h14v3M12 9v3"/><rect x="9" y="3" width="6" height="4" rx="1"/><rect x="2" y="19" width="6" height="3" rx="1"/><rect x="16" y="19" width="6" height="3" rx="1"/></svg></span>
+          <span class="module-copy"><strong>Departamentos</strong><small>Ministérios e equipes</small></span>
+          <em class="new-badge">Novo</em><span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="grupos">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+          <span class="module-copy"><strong>Grupos</strong><small>Comunhão e células</small></span><span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="financeiro">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M7 15h3"/></svg></span>
+          <span class="module-copy"><strong>Financeiro</strong><small>Tesouraria e relatórios</small></span><span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="estudos">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M4 4h12l4 4v12H4zM16 4v5h5M8 13h8M8 17h6"/></svg></span>
+          <span class="module-copy"><strong>Estudos</strong><small>Materiais e séries</small></span><span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="kids">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span>
+          <span class="module-copy"><strong>Kids</strong><small>Ministério infantil</small></span><em class="new-badge">Novo</em><span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="aniversariantes">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 7v14M12 7H7.5A2.5 2.5 0 1 1 10 4.5C10 7 12 7 12 7ZM12 7h4.5A2.5 2.5 0 1 0 14 4.5C14 7 12 7 12 7Z"/></svg></span>
+          <span class="module-copy"><strong>Aniversariantes</strong><small>Datas especiais</small></span><span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="fotos">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M4 7h4l2-2h4l2 2h4v12H4z"/><circle cx="12" cy="13" r="3"/></svg></span>
+          <span class="module-copy"><strong>Fotos</strong><small>Galeria da igreja</small></span><span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="videos">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="m17 10 4-2v8l-4-2z"/></svg></span>
+          <span class="module-copy"><strong>Vídeos</strong><small>Cultos e conteúdos</small></span><span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="arquivos">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M4 4h6l2 3h8v13H4zM4 10h16"/></svg></span>
+          <span class="module-copy"><strong>Arquivos</strong><small>Documentos oficiais</small></span><span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="oracao">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="M8 4c0 5 4 7 4 12M16 4c0 5-4 7-4 12M7 20h10M12 16v4"/></svg></span>
+          <span class="module-copy"><strong>Oração</strong><small>Envie seu pedido</small></span><span class="chevron">›</span>
+        </button>
+
+        <button class="module-card" data-view="visitas">
+          <span class="icon-wrap"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v10H3zM9 21v-7h6v7"/></svg></span>
+          <span class="module-copy"><strong>Visitas</strong><small>Solicitação pastoral</small></span><span class="chevron">›</span>
+        </button>
+      </div>
     </section>
 
     <section class="next-section">
-      <div class="section-title-row"><h2>Próximos 7 dias</h2><button class="calendar-btn" data-view="agenda">Ver calendário</button></div>
+      <div class="section-title-row">
+        <div><span class="section-kicker">Agenda</span><h2>Próximos 7 dias</h2></div>
+        <button class="calendar-btn" data-view="agenda">Ver calendário</button>
+      </div>
       <div id="nextEvents" class="events-box"></div>
     </section>
+
     <section id="contentPanel" class="content-panel hidden"></section>
   </main>
 
   <nav class="bottom-nav">
-    <button data-view="menu"><span>☰</span><small>Menu</small></button>
-    <button data-view="inicio" class="active"><span>🏠</span><small>Início</small></button>
-    <button data-view="notificacoes"><span>🔔</span><small>Avisos</small></button>
+    <button data-view="menu"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><small>Menu</small></button>
+    <button data-view="inicio" class="active"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v10H3zM9 21v-7h6v7"/></svg></span><small>Início</small></button>
+    <button data-view="notificacoes"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span><small>Avisos</small></button>
     <button data-view="perfil"><span class="avatar-mini">NF</span><small>Perfil</small></button>
   </nav>
   <script src="app.js"></script>
