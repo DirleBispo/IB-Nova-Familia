@@ -1,0 +1,9 @@
+{
+  "name": "Igreja Batista Nova Família",
+  "short_name": "IB Nova Família",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#eef5f6",
+  "theme_color": "#4ab653",
+  "description": "Aplicativo oficial da Igreja Batista Nova Família"
+}
