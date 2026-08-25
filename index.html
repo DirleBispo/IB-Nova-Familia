@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#49b653">
+  <title>IB Nova Família</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-circle">NF</div>
+      <div>
+        <small>Igreja Batista</small>
+        <strong>Nova Família</strong>
+      </div>
+    </div>
+    <button id="installBtn" class="install-btn" hidden>Instalar</button>
+  </header>
+
+  <main class="app-main">
+    <section class="welcome-card">
+      <div>
+        <span class="welcome-label">Bem-vindo</span>
+        <h1>IB Nova Família</h1>
+        <p>Conectando pessoas, ministérios e informações da igreja.</p>
+      </div>
+    </section>
+
+    <section class="module-grid" id="moduleGrid">
+      <button class="module-card" data-view="pessoas"><span class="icon">👥</span><span>Pessoas</span></button>
+      <button class="module-card" data-view="departamentos"><span class="icon">🧩</span><span>Departamentos</span><em class="new-badge">Novo</em></button>
+      <button class="module-card" data-view="grupos"><span class="icon">▦</span><span>Grupos</span></button>
+      <button class="module-card" data-view="financeiro"><span class="icon">💵</span><span>Financeiro</span></button>
+      <button class="module-card" data-view="estudos"><span class="icon">📄</span><span>Estudos</span></button>
+      <button class="module-card" data-view="kids"><span class="icon">🙂</span><span>Kids</span><em class="new-badge">Novo</em></button>
+      <button class="module-card" data-view="aniversariantes"><span class="icon">🎁</span><span>Aniversariantes</span></button>
+      <button class="module-card" data-view="fotos"><span class="icon">📷</span><span>Fotos</span></button>
+      <button class="module-card" data-view="videos"><span class="icon">🎥</span><span>Vídeos</span></button>
+      <button class="module-card" data-view="arquivos"><span class="icon">🗂️</span><span>Arquivos</span></button>
+      <button class="module-card" data-view="oracao"><span class="icon">🙏</span><span>Oração</span></button>
+      <button class="module-card" data-view="visitas"><span class="icon">🏠</span><span>Visitas</span></button>
+    </section>
+
+    <section class="next-section">
+      <div class="section-title-row"><h2>Próximos 7 dias</h2><button class="calendar-btn" data-view="agenda">Ver calendário</button></div>
+      <div id="nextEvents" class="events-box"></div>
+    </section>
+    <section id="contentPanel" class="content-panel hidden"></section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button data-view="menu"><span>☰</span><small>Menu</small></button>
+    <button data-view="inicio" class="active"><span>🏠</span><small>Início</small></button>
+    <button data-view="notificacoes"><span>🔔</span><small>Avisos</small></button>
+    <button data-view="perfil"><span class="avatar-mini">NF</span><small>Perfil</small></button>
+  </nav>
+  <script src="app.js"></script>
+</body>
+</html>
