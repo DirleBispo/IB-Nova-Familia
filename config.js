@@ -1,1 +1,1 @@
-window.IBNF_CONFIG={SUPABASE_URL:'',SUPABASE_ANON_KEY:''};
+window.IBNF_CONFIG={SUPABASE_URL:'https://dfeaqeoeotlfweyaxqum.supabase.co',SUPABASE_ANON_KEY:'sb_publishable_1CdrcQyQUfhBSUFdaah8IQ_L2PVOvaj'};
