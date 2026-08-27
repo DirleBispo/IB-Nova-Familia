@@ -2,39 +2,52 @@
   if(!window.supabase||!window.IBNF_CONFIG?.SUPABASE_URL||!window.IBNF_CONFIG?.SUPABASE_ANON_KEY)return;
   const client=window.supabase.createClient(window.IBNF_CONFIG.SUPABASE_URL,window.IBNF_CONFIG.SUPABASE_ANON_KEY);
   const restrictedViews=new Set(['pastoral','pessoas','financeiro','acessos']);
-  const hideWhenLoggedOut=['pastoral','pessoas','financeiro'];
-  let loggedIn=false;
+  let session=null,profile=null;
+
+  function defaults(perfil){
+    if(perfil==='admin'||perfil==='pastor')return {pastoral:true,pessoas:true,financeiro:true,acessos:true};
+    if(perfil==='tesouraria')return {pastoral:false,pessoas:false,financeiro:true,acessos:false};
+    if(perfil==='secretaria')return {pastoral:false,pessoas:true,financeiro:false,acessos:false};
+    return {pastoral:false,pessoas:false,financeiro:false,acessos:false};
+  }
+  function can(view){
+    if(!session||!profile?.ativo)return false;
+    const d=defaults(profile.perfil),p=profile.permissoes||{};
+    return p[view]===true || (p[view]!==false && d[view]===true);
+  }
+  window.IBNF_ACCESS={can,getProfile:()=>profile,isApproved:()=>!!profile?.ativo};
 
   function applyVisibility(){
-    hideWhenLoggedOut.forEach(view=>{
+    ['pastoral','pessoas','financeiro'].forEach(view=>{
       document.querySelectorAll(`[data-view="${view}"]`).forEach(el=>{
-        el.hidden=!loggedIn;
-        el.setAttribute('aria-hidden',loggedIn?'false':'true');
+        const show=can(view); el.hidden=!show; el.setAttribute('aria-hidden',show?'false':'true');
       });
     });
   }
 
   async function refreshAuth(){
     const {data}=await client.auth.getSession();
-    loggedIn=!!data.session;
+    session=data.session||null; profile=null;
+    if(session){
+      const {data:p}=await client.from('perfis').select('id,nome,perfil,ativo,permissoes').eq('id',session.user.id).maybeSingle();
+      profile=p||null;
+    }
     applyVisibility();
   }
 
   const previousShowView=window.showView;
   window.showView=function(view){
-    if(restrictedViews.has(view)&&!loggedIn){
+    if(restrictedViews.has(view)&&!can(view)){
       if(typeof window.openPanel==='function'){
-        window.openPanel('Meu acesso','<div class="setup-notice"><b>Área restrita</b><span>Faça login para acessar esta área.</span></div>');
+        const msg=!session?'Faça login para acessar esta área.':(!profile?.ativo?'Seu cadastro ainda está aguardando aprovação da liderança.':'Seu usuário não possui permissão para esta área.');
+        window.openPanel('Meu acesso',`<div class="setup-notice"><b>Área restrita</b><span>${msg}</span></div>`);
       }
-      return previousShowView('perfil');
+      if(!session)return previousShowView('perfil');
+      return;
     }
     return previousShowView(view);
   };
 
-  client.auth.onAuthStateChange((_event,session)=>{
-    loggedIn=!!session;
-    applyVisibility();
-  });
-
+  client.auth.onAuthStateChange(()=>setTimeout(refreshAuth,50));
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refreshAuth);else refreshAuth();
 })();
