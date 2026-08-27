@@ -42,14 +42,12 @@ for each row execute procedure public.ibnf_criar_perfil_pendente();
 -- 3) RLS
 alter table public.perfis enable row level security;
 
--- O próprio usuário pode consultar seu perfil (inclusive enquanto aguarda aprovação)
 drop policy if exists "usuario ve proprio perfil" on public.perfis;
 create policy "usuario ve proprio perfil"
 on public.perfis for select
 to authenticated
 using (id = auth.uid());
 
--- Pastor/Admin ativo pode listar todos os perfis
 drop policy if exists "pastor lista perfis" on public.perfis;
 create policy "pastor lista perfis"
 on public.perfis for select
@@ -63,7 +61,6 @@ using (
   )
 );
 
--- Pastor/Admin ativo pode aprovar, alterar perfil e permissões
 drop policy if exists "pastor atualiza perfis" on public.perfis;
 create policy "pastor atualiza perfis"
 on public.perfis for update
@@ -85,7 +82,7 @@ with check (
   )
 );
 
--- 4) Função auxiliar para aprovar sem depender de manipulação do front-end
+-- 4) Aprovar e definir perfil/permissões
 create or replace function public.ibnf_aprovar_usuario(
   alvo uuid,
   novo_perfil text,
@@ -122,7 +119,7 @@ $$;
 
 grant execute on function public.ibnf_aprovar_usuario(uuid,text,jsonb) to authenticated;
 
--- 5) Função auxiliar para suspender acesso
+-- 5) Suspender acesso
 create or replace function public.ibnf_suspender_usuario(alvo uuid)
 returns void
 language plpgsql
@@ -148,3 +145,23 @@ end;
 $$;
 
 grant execute on function public.ibnf_suspender_usuario(uuid) to authenticated;
+
+-- 6) O Financeiro passa a aceitar perfil padrão OU permissão individual.
+-- Mantém compatibilidade com o módulo financeiro já existente.
+create or replace function public.usuario_financeiro()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.perfis
+    where id = auth.uid()
+      and ativo = true
+      and (
+        perfil in ('pastor','admin','tesouraria')
+        or coalesce((permissoes->>'financeiro')::boolean,false) = true
+      )
+  );
+$$;
