@@ -5,6 +5,7 @@
   const WORKER='https://ibnf-pwa-backend.dirleibispo.workers.dev';
   const esc=(v='')=>String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#039;'}[m]));
   const feedback=(id,msg,type='success')=>{const el=document.querySelector(id);if(el)el.innerHTML=`<div class="${type}">${msg}</div>`};
+  const focusForm=id=>setTimeout(()=>{const form=document.querySelector(id);if(!form)return;form.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>form.querySelector('input,textarea,select')?.focus({preventScroll:true}),350)},180);
 
   async function postWorker(route,payload){
     const r=await fetch(WORKER+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
@@ -23,6 +24,7 @@
 
   function openOracao(){
     window.openPanel('Pedido de oração',`<div class="social-intro"><span class="section-kicker">Cuidado pastoral</span><h3>Envie seu pedido de oração</h3><p>O pedido fica registrado no sistema e também é encaminhado aos canais internos da igreja.</p></div><form class="form" id="oracaoSupabaseForm"><input name="nome" placeholder="Seu nome" required><input name="telefone" placeholder="Telefone / WhatsApp (opcional)"><textarea name="pedido" placeholder="Digite seu pedido de oração" required></textarea><button class="primary">Enviar pedido</button></form><div id="oracaoFeedback"></div>`);
+    focusForm('#oracaoSupabaseForm');
     document.querySelector('#oracaoSupabaseForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Enviando...';try{
       const payload={nome:f.get('nome').trim(),telefone:f.get('telefone').trim()||null,pedido:f.get('pedido').trim()};
       const [sb,cf]=await Promise.allSettled([client.from('pedidos_oracao').insert(payload),postWorker('/telegram/oracao',{nome:payload.nome,pedido:payload.pedido})]);
@@ -35,6 +37,7 @@
   function openVisitas(){
     const today=new Date().toISOString().slice(0,10);
     window.openPanel('Solicitar visita',`<div class="social-intro"><span class="section-kicker">Acompanhamento</span><h3>Solicite uma visita pastoral</h3><p>Informe o melhor dia, horário e endereço para a equipe entrar em contato.</p></div><form class="form" id="visitaSupabaseForm"><input name="nome" placeholder="Nome completo" required><input name="telefone" placeholder="Telefone / WhatsApp" required><input name="data" type="date" min="${today}" required><input name="hora" type="time" required><input name="endereco" placeholder="Endereço completo" required><textarea name="motivo" placeholder="Motivo da visita (opcional)"></textarea><button class="primary">Solicitar visita</button></form><div id="visitaFeedback"></div>`);
+    focusForm('#visitaSupabaseForm');
     document.querySelector('#visitaSupabaseForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Enviando...';try{
       const payload={nome:f.get('nome').trim(),telefone:f.get('telefone').trim(),data:f.get('data'),hora:f.get('hora'),endereco:f.get('endereco').trim(),motivo:f.get('motivo').trim()||''};
       const sbPayload={nome:payload.nome,telefone:payload.telefone,observacao:`Data: ${payload.data} | Hora: ${payload.hora} | Endereço: ${payload.endereco}${payload.motivo?' | Motivo: '+payload.motivo:''}`};
