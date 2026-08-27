@@ -13,6 +13,15 @@
     return !!data?.ativo&&['pastor','tesouraria'].includes(data.perfil);
   }
 
+  async function deleteLancamento(id,descricao){
+    if(!(await allowed()))return;
+    const ok=confirm(`Deseja realmente excluir este lançamento?\n\n${descricao||''}\n\nEsta ação não poderá ser desfeita.`);
+    if(!ok)return;
+    const {error}=await client.from('financeiro_lancamentos').delete().eq('id',id);
+    if(error){alert('Não foi possível excluir: '+error.message);return;}
+    await loadFinanceiro();
+  }
+
   async function loadFinanceiro(){
     if(typeof window.openPanel!=='function')return;
     window.openPanel('Financeiro','<div class="birthday-loading">Carregando financeiro...</div>');
@@ -29,11 +38,12 @@
     const saldo=entradas-saidas;
     const list=rows.map(x=>{
       const pessoa=x.pessoa_nome?`<small>Ofertante/Pessoa: ${esc(x.pessoa_nome)}</small>`:'';
-      return `<div class="finance-row ${x.tipo}"><div><b>${esc(x.descricao)}</b><small>${fmtDate(x.data)} · ${esc(x.categoria)}${x.forma_pagamento?' · '+esc(x.forma_pagamento):''}</small>${pessoa}</div><strong>${x.tipo==='saida'?'-':'+'}${money(x.valor)}</strong></div>`;
+      return `<div class="finance-row ${x.tipo}"><div class="finance-row-main"><div><b>${esc(x.descricao)}</b><small>${fmtDate(x.data)} · ${esc(x.categoria)}${x.forma_pagamento?' · '+esc(x.forma_pagamento):''}</small>${pessoa}</div><strong>${x.tipo==='saida'?'-':'+'}${money(x.valor)}</strong></div><div class="finance-row-actions"><button type="button" class="finance-delete" data-fin-delete="${esc(x.id)}" data-fin-desc="${esc(x.descricao)}">Excluir</button></div></div>`;
     }).join('');
     const html=`<div class="finance-summary"><div><span>Entradas do mês</span><b>${money(entradas)}</b></div><div><span>Saídas do mês</span><b>${money(saidas)}</b></div><div><span>Saldo do mês</span><b>${money(saldo)}</b></div></div><div class="finance-actions"><button class="primary" id="novoLancamentoBtn">Novo lançamento</button></div><div class="finance-section"><h3>Movimentações do mês</h3>${list||'<div class="empty"><div>Nenhum lançamento neste mês.</div></div>'}</div>`;
     window.openPanel('Financeiro',html);
     document.querySelector('#novoLancamentoBtn')?.addEventListener('click',openForm);
+    document.querySelectorAll('[data-fin-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteLancamento(btn.dataset.finDelete,btn.dataset.finDesc)));
   }
 
   async function fetchFormData(){
