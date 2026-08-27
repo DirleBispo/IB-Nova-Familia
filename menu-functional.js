@@ -4,7 +4,7 @@
   function openMenu(){
     if(typeof window.openPanel!=='function')return;
     window.openPanel('Menu',`<div class="menu-action-list">
-      <button class="menu-action" onclick="showView('acessos')"><b>Administração</b><small>Cadastros, permissões e acessos da equipe.</small><span>›</span></button>
+      <button class="menu-action" onclick="showView('acessos')"><b>Administração</b><small>Usuários, aprovações, permissões e acessos da equipe.</small><span>›</span></button>
       <button class="menu-action" onclick="showView('perfil')"><b>Minha conta</b><small>Login, perfil e acesso ao sistema.</small><span>›</span></button>
       <button class="menu-action" onclick="showView('redes')"><b>Redes Sociais</b><small>Instagram, Facebook e WhatsApp oficiais da igreja.</small><span>›</span></button>
       <button class="menu-action" onclick="showView('agenda')"><b>Agenda</b><small>Veja a programação e os próximos cultos.</small><span>›</span></button>
@@ -18,4 +18,9 @@
     if(view!=='inicio'&&view!=='falar')scrollPanel();
     return r;
   };
+
+  // Carrega o módulo de cadastro/aprovação sem duplicar lógica no index.html.
+  const css=document.createElement('link');css.rel='stylesheet';css.href='cadastro-permissoes.css';document.head.appendChild(css);
+  function load(src,next){const s=document.createElement('script');s.src=src;s.onload=()=>next&&next();document.body.appendChild(s)}
+  load('cadastro-acesso.js',()=>load('admin-permissoes.js'));
 })();
