@@ -26,6 +26,31 @@ with check (
   and char_length(trim(nome)) between 2 and 80
 );
 
+drop policy if exists "oracao24 admin pode editar" on public.oracao24_reservas;
+create policy "oracao24 admin pode editar"
+on public.oracao24_reservas
+for update
+to authenticated
+using (
+  exists (
+    select 1
+    from public.perfis p
+    where p.id = auth.uid()
+      and p.perfil in ('pastor','secretaria')
+  )
+)
+with check (
+  slot_inicio >= timestamptz '2026-09-04 23:00:00-03'
+  and slot_inicio < timestamptz '2026-09-05 23:00:00-03'
+  and char_length(trim(nome)) between 2 and 80
+  and exists (
+    select 1
+    from public.perfis p
+    where p.id = auth.uid()
+      and p.perfil in ('pastor','secretaria')
+  )
+);
+
 drop policy if exists "oracao24 admin pode liberar" on public.oracao24_reservas;
 create policy "oracao24 admin pode liberar"
 on public.oracao24_reservas
@@ -40,4 +65,15 @@ using (
   )
 );
 
-alter publication supabase_realtime add table public.oracao24_reservas;
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'oracao24_reservas'
+  ) then
+    alter publication supabase_realtime add table public.oracao24_reservas;
+  end if;
+end $$;
