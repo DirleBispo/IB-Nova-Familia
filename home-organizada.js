@@ -1,0 +1,1 @@
+(()=>{const dashboard=document.querySelector('#homeDashboard');const panel=document.querySelector('#contentPanel');if(!dashboard||!panel)return;const sync=()=>dashboard.classList.toggle('home-dashboard-hidden',!panel.classList.contains('hidden'));new MutationObserver(sync).observe(panel,{attributes:true,attributeFilter:['class']});sync()})();
