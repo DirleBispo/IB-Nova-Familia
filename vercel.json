@@ -1,5 +1,7 @@
 {
   "rewrites": [
-    { "source": "/cadastro", "destination": "/" }
+    { "source": "/cadastro", "destination": "/" },
+    { "source": "/oracao", "destination": "/oracao.html" },
+    { "source": "/24-horas-oracao", "destination": "/oracao.html" }
   ]
 }

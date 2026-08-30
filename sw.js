@@ -1,5 +1,25 @@
-const CACHE='ibnf-v3';
-const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./members-admin.css','./birthdays.css','./community-data.css','./pastoral-dashboard.css','./financeiro.css','./financeiro.js'];
+const CACHE='ibnf-v4';
+const ASSETS=[
+  './',
+  './index.html',
+  './styles.css',
+  './app.js',
+  './manifest.webmanifest',
+  './members-admin.css',
+  './birthdays.css',
+  './community-data.css',
+  './pastoral-dashboard.css',
+  './financeiro.css',
+  './financeiro.js',
+  './home-organizada.css',
+  './home-organizada.js',
+  './campaign.css',
+  './oracao.html',
+  './oracao.css',
+  './oracao.js',
+  './config.js',
+  './photo_5143638454599093943_y.jpg'
+];
 
 self.addEventListener('install',event=>{
   self.skipWaiting();

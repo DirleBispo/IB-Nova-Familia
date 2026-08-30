@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0f55b5">
+    <meta
+      name="description"
+      content="Escolha um horário e participe das 24 Horas de Oração da Igreja Batista Nova Família."
+    >
+    <title>24 Horas de Oração | IB Nova Família</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="oracao.css">
+  </head>
+  <body>
+    <main class="prayer-page">
+      <section class="prayer-hero">
+        <img
+          src="photo_5143638454599093943_y.jpg"
+          alt="Logo da Igreja Batista Nova Família"
+          class="prayer-logo"
+        >
+        <span class="prayer-kicker">IB Nova Família</span>
+        <h1>24 Horas de Oração</h1>
+        <p class="prayer-verse">“Orai sem cessar.” <strong>1 Tessalonicenses 5:17</strong></p>
+        <p class="prayer-period">De 04/09/2026 às 23h até 05/09/2026 às 23h</p>
+      </section>
+
+      <section class="prayer-content" aria-labelledby="prayerHeading">
+        <div class="prayer-intro">
+          <span class="prayer-step">Participe desta campanha</span>
+          <h2 id="prayerHeading">Escolha seu horário</h2>
+          <p>
+            Cada horário corresponde a uma hora de oração. Depois da confirmação,
+            ele ficará reservado em seu nome.
+          </p>
+          <div id="prayerSummary" class="prayer-summary" aria-live="polite">
+            Carregando escala...
+          </div>
+          <div class="prayer-legend" aria-label="Legenda da escala">
+            <span><i class="legend-dot available-dot"></i>Disponível</span>
+            <span><i class="legend-dot reserved-dot"></i>Reservado</span>
+          </div>
+        </div>
+
+        <div id="prayerFeedback" aria-live="polite"></div>
+        <div id="prayerSlots" class="prayer-slots" aria-busy="true"></div>
+
+        <div class="prayer-footer">
+          <a href="./">← Voltar ao aplicativo da igreja</a>
+        </div>
+      </section>
+    </main>
+
+    <div
+      id="prayerModal"
+      class="prayer-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="prayerModalTitle"
+    >
+      <div class="prayer-modal-card">
+        <button id="prayerModalClose" class="prayer-modal-close" type="button" aria-label="Fechar">
+          ×
+        </button>
+        <span class="prayer-step">Confirmação</span>
+        <h2 id="prayerModalTitle">Reservar horário</h2>
+        <p id="prayerSelectedSlot"></p>
+        <form id="prayerReserveForm">
+          <label>
+            Seu nome
+            <input
+              id="prayerName"
+              name="nome"
+              type="text"
+              maxlength="80"
+              autocomplete="name"
+              placeholder="Digite seu nome"
+              required
+            >
+          </label>
+          <button type="submit" class="prayer-confirm">Confirmar meu horário</button>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="prayerEditModal"
+      class="prayer-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="prayerEditTitle"
+    >
+      <div class="prayer-modal-card">
+        <button id="prayerEditClose" class="prayer-modal-close" type="button" aria-label="Fechar">
+          ×
+        </button>
+        <span class="prayer-step">Administração</span>
+        <h2 id="prayerEditTitle">Editar reserva</h2>
+        <p>Altere o nome ou transfira a pessoa para outro horário disponível.</p>
+        <form id="prayerEditForm">
+          <label>
+            Nome
+            <input id="prayerEditName" type="text" maxlength="80" required>
+          </label>
+          <label class="prayer-field-gap">
+            Horário
+            <select id="prayerEditSlot" required></select>
+          </label>
+          <button type="submit" class="prayer-confirm">Salvar alterações</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="oracao.js"></script>
+  </body>
+</html>

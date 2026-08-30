@@ -1,0 +1,10 @@
+.campaign-callout { position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 24px; margin: 0 0 20px; padding: 24px 26px; border-radius: 22px; background: radial-gradient(circle at 92% 12%, rgba(255,255,255,.2), transparent 25%), linear-gradient(135deg,#173d7a,#0f55b5 65%,#2e78cf); color: #fff; box-shadow: 0 14px 36px rgba(15,85,181,.2); }
+.campaign-callout::after { content: "24h"; position: absolute; right: 24px; bottom: -28px; color: rgba(255,255,255,.08); font-size: 104px; font-weight: 950; line-height: 1; pointer-events: none; }
+.campaign-copy, .campaign-action { position: relative; z-index: 1; }
+.campaign-label { display: block; margin-bottom: 5px; color: #dbeaff; font-size: 12px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.campaign-callout h2 { margin: 0 0 8px; color: #fff; font-size: clamp(24px,4vw,32px); }
+.campaign-callout p { margin: 0; color: rgba(255,255,255,.9); line-height: 1.55; }
+.campaign-action { display: inline-flex; align-items: center; justify-content: center; min-width: 174px; padding: 13px 18px; border-radius: 13px; background: #fff; color: #173d7a; font-weight: 900; text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+.campaign-action:hover { transform: translateY(-1px); }
+.campaign-action:focus-visible { outline: 3px solid rgba(255,255,255,.55); outline-offset: 3px; }
+@media (max-width:680px) { .campaign-callout { grid-template-columns: 1fr; gap: 18px; padding: 22px 20px; } .campaign-action { width: 100%; } .campaign-callout::after { right: 4px; bottom: -18px; font-size: 82px; } }
