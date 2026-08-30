@@ -21,16 +21,25 @@
           class="prayer-logo"
         >
         <span class="prayer-kicker">IB Nova Família</span>
-        <h1>24 Horas de Oração</h1>
-        <p class="prayer-verse">“Orai sem cessar.” <strong>1 Tessalonicenses 5:17</strong></p>
-        <p class="prayer-period">De 04/09/2026 às 23h até 05/09/2026 às 23h</p>
+        <h1 id="campaignTitle">24 Horas de Oração</h1>
+        <p class="prayer-verse">
+          “<span id="campaignVerseText">Orai sem cessar.</span>”
+          <strong id="campaignVerseReference">1 Tessalonicenses 5:17</strong>
+        </p>
+        <p id="campaignPeriod" class="prayer-period">
+          De 04/09/2026 às 23h até 05/09/2026 às 23h
+        </p>
       </section>
 
       <section class="prayer-content" aria-labelledby="prayerHeading">
         <div class="prayer-intro">
+          <div id="campaignAdminBar" class="prayer-admin-bar hidden">
+            <span>Administração da campanha</span>
+            <button id="campaignEditButton" type="button">Editar campanha</button>
+          </div>
           <span class="prayer-step">Participe desta campanha</span>
           <h2 id="prayerHeading">Escolha seu horário</h2>
-          <p>
+          <p id="campaignDescription">
             Cada horário corresponde a uma hora de oração. Depois da confirmação,
             ele ficará reservado em seu nome.
           </p>
@@ -108,6 +117,63 @@
             <select id="prayerEditSlot" required></select>
           </label>
           <button type="submit" class="prayer-confirm">Salvar alterações</button>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="campaignSettingsModal"
+      class="prayer-modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="campaignSettingsTitle"
+    >
+      <div class="prayer-modal-card campaign-settings-card">
+        <button id="campaignSettingsClose" class="prayer-modal-close" type="button" aria-label="Fechar">
+          ×
+        </button>
+        <span class="prayer-step">Administração</span>
+        <h2 id="campaignSettingsTitle">Editar campanha</h2>
+        <p>As alterações aparecerão para todos no aplicativo.</p>
+        <form id="campaignSettingsForm">
+          <div class="campaign-editor-grid">
+            <label class="campaign-editor-full">
+              Título da campanha
+              <input id="campaignTitleInput" type="text" maxlength="100" required>
+            </label>
+            <label class="campaign-editor-full">
+              Texto do versículo
+              <input id="campaignVerseTextInput" type="text" maxlength="180" required>
+            </label>
+            <label class="campaign-editor-full">
+              Referência bíblica
+              <input id="campaignVerseReferenceInput" type="text" maxlength="80" required>
+            </label>
+            <label class="campaign-editor-full">
+              Texto de orientação
+              <textarea id="campaignDescriptionInput" rows="4" maxlength="500" required></textarea>
+            </label>
+            <label>
+              Início — horário de Sorocaba/SP
+              <input id="campaignStartInput" type="datetime-local" required>
+            </label>
+            <label>
+              Duração em horas
+              <input id="campaignDurationInput" type="number" min="1" max="168" step="1" required>
+            </label>
+          </div>
+          <label class="campaign-active-control">
+            <input id="campaignActiveInput" type="checkbox">
+            <span>
+              <strong>Campanha ativa</strong>
+              <small>Quando desativada, o destaque some da página inicial e novas reservas ficam bloqueadas.</small>
+            </span>
+          </label>
+          <div class="campaign-history-note">
+            Ao mudar a data, as reservas da campanha anterior ficam guardadas e a nova escala começa vazia.
+          </div>
+          <div id="campaignSettingsFeedback" aria-live="polite"></div>
+          <button type="submit" class="prayer-confirm">Salvar campanha</button>
         </form>
       </div>
     </div>
