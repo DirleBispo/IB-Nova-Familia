@@ -59,4 +59,19 @@ body { margin: 0; background: #f4f7fb; color: var(--prayer-text); font-family: I
 .prayer-confirm { width: 100%; margin-top: 14px; padding: 13px 16px; border: 0; border-radius: 12px; background: var(--prayer-blue); color: #fff; font-weight: 900; cursor: pointer; }
 .prayer-confirm:disabled { opacity: .65; cursor: wait; }
 .prayer-modal-close { position: absolute; top: 12px; right: 14px; border: 0; background: transparent; color: #667085; font-size: 28px; cursor: pointer; }
-@media (max-width:650px) { .prayer-hero { padding-top: 30px; } .prayer-slots { grid-template-columns: 1fr; } .prayer-slot { align-items: flex-start; padding: 15px; } .prayer-slot-actions { justify-content: flex-start; } }
+.prayer-admin-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -6px -6px 18px; padding: 11px 12px; border: 1px solid #cfe0f5; border-radius: 14px; background: var(--prayer-blue-soft); color: var(--prayer-blue-dark); font-size: 13px; font-weight: 800; }
+.prayer-admin-bar button { padding: 9px 12px; border: 0; border-radius: 10px; background: var(--prayer-blue); color: #fff; font-weight: 850; cursor: pointer; }
+.prayer-slot.closed { border-left: 4px solid #aab3c0; background: #f8fafc; }
+.prayer-slot.closed button { background: #e7ecf3; color: #617084; cursor: not-allowed; }
+.campaign-settings-card { width: min(680px,100%); max-height: calc(100vh - 36px); overflow: auto; }
+.campaign-editor-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.campaign-editor-full { grid-column: 1 / -1; }
+.prayer-modal-card textarea { width: 100%; resize: vertical; padding: 13px 14px; border: 1px solid #cfd9e6; border-radius: 12px; background: #fff; font: inherit; }
+.prayer-modal-card textarea:focus { outline: 3px solid rgba(15,85,181,.15); border-color: var(--prayer-blue); }
+.campaign-active-control { display: flex !important; grid-template-columns: none !important; flex-direction: row; align-items: flex-start; gap: 11px !important; margin-top: 18px; padding: 14px; border: 1px solid #d9e4f1; border-radius: 14px; background: #f8fbff; }
+.campaign-active-control input { width: 20px; height: 20px; margin: 1px 0 0; flex: 0 0 auto; }
+.campaign-active-control span { display: grid; gap: 3px; }
+.campaign-active-control small { color: var(--prayer-muted); font-weight: 500; line-height: 1.4; }
+.campaign-history-note { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: #fff8e8; color: #7a5410; font-size: 13px; line-height: 1.45; }
+.campaign-settings-error { margin-top: 12px; padding: 11px 13px; border-radius: 11px; background: #fff0f0; color: #b42318; font-size: 13px; font-weight: 700; }
+@media (max-width:650px) { .prayer-hero { padding-top: 30px; } .prayer-slots { grid-template-columns: 1fr; } .prayer-slot { align-items: flex-start; padding: 15px; } .prayer-slot-actions { justify-content: flex-start; } .prayer-admin-bar { align-items: flex-start; flex-direction: column; } .prayer-admin-bar button { width: 100%; } .campaign-editor-grid { grid-template-columns: 1fr; } .campaign-editor-full { grid-column: auto; } }
