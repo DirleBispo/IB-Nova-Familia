@@ -35,4 +35,9 @@
   }
 
   window.showView=function(view){if(view==='push-notifications'){render();return}return previousShowView(view)};
+  const requestedView=new URLSearchParams(window.location.search).get('view');
+  if(requestedView==='aniversariantes'){
+    window.history.replaceState({},'',window.location.pathname);
+    setTimeout(()=>window.showView('aniversariantes'),350);
+  }
 })();
