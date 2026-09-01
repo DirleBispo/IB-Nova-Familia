@@ -37,6 +37,14 @@
     const perfil=document.querySelector(`#perfil-${id}`)?.value||'membro',p=defaults(perfil);
     Object.keys(p).forEach(k=>{const el=document.querySelector(`#perm-${k}-${id}`);if(el)el.checked=p[k]});
   };
+  window.ibnfCompartilharCadastro=async function(){
+    const url=`${location.origin}/cadastro`;
+    const data={title:'Cadastro | IB Nova Família',text:'Olá! Faça seu cadastro no aplicativo da IB Nova Família:',url};
+    try{
+      if(navigator.share){await navigator.share(data);return}
+      await navigator.clipboard.writeText(url);alert('Link de cadastro copiado. Agora é só colar e enviar.');
+    }catch(error){if(error?.name!=='AbortError')alert('Não foi possível compartilhar. Toque no link para selecioná-lo e copiar.')}
+  };
 
   function card(u){
     const p=permsOf(u.permissoes,u.perfil),status=u.ativo?'Ativo':'Aguardando aprovação';
@@ -50,7 +58,7 @@
     const {data,error}=await sb.from('perfis').select('id,nome,telefone,perfil,ativo,permissoes,criado_em').order('ativo',{ascending:true}).order('criado_em',{ascending:false});
     if(error){window.openPanel('Usuários e Permissões',`<div class="error-box">${esc(error.message)}</div>`);return}
     const pend=(data||[]).filter(x=>!x.ativo),ativos=(data||[]).filter(x=>x.ativo);
-    window.openPanel('Usuários e Permissões',`<div class="social-intro"><span class="section-kicker">Administração</span><h3>Aprovação e níveis de acesso</h3><p>Novas contas entram sem acesso administrativo. Aprove a pessoa e libere somente as áreas necessárias.</p><div class="invite-box"><b>Link para novo cadastro</b><input value="${location.origin}/cadastro" readonly onclick="this.select()"><small>Envie este link para a pessoa criar a própria conta.</small></div></div><section class="access-group"><h3>Aguardando aprovação (${pend.length})</h3>${pend.map(card).join('')||'<div class="empty"><div>Nenhuma solicitação pendente.</div></div>'}</section><section class="access-group"><h3>Usuários ativos (${ativos.length})</h3>${ativos.map(card).join('')||'<div class="empty"><div>Nenhum usuário ativo.</div></div>'}</section>`);
+    window.openPanel('Usuários e Permissões',`<div class="social-intro"><span class="section-kicker">Administração</span><h3>Aprovação e níveis de acesso</h3><p>Novas contas entram sem acesso administrativo. Aprove a pessoa e libere somente as áreas necessárias.</p><div class="invite-box"><b>Link para novo cadastro</b><input value="${location.origin}/cadastro" readonly onclick="this.select()"><button class="primary" type="button" onclick="ibnfCompartilharCadastro()">Compartilhar cadastro</button><small>Envie este link para a pessoa criar a própria conta.</small></div></div><section class="access-group"><h3>Aguardando aprovação (${pend.length})</h3>${pend.map(card).join('')||'<div class="empty"><div>Nenhuma solicitação pendente.</div></div>'}</section><section class="access-group"><h3>Usuários ativos (${ativos.length})</h3>${ativos.map(card).join('')||'<div class="empty"><div>Nenhum usuário ativo.</div></div>'}</section>`);
   }
 
   window.ibnfAbrirPermissoes=abrir;
