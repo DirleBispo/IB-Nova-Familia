@@ -24,10 +24,6 @@
         const show=can(view); el.hidden=!show; el.setAttribute('aria-hidden',show?'false':'true');
       });
     });
-    document.querySelectorAll('[data-view="push-notifications"]').forEach(el=>{
-      const show=!!session&&!!profile?.ativo&&['pastor','admin','secretaria'].includes(profile?.perfil);
-      el.hidden=!show;el.setAttribute('aria-hidden',show?'false':'true');
-    });
   }
 
   async function refreshAuth(){
