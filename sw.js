@@ -1,4 +1,4 @@
-const CACHE='ibnf-v7';
+const CACHE='ibnf-v8';
 const ASSETS=[
   './',
   './index.html',
@@ -7,6 +7,7 @@ const ASSETS=[
   './manifest.webmanifest',
   './members-admin.css',
   './birthdays.css',
+  './push-notifications.js',
   './community-data.css',
   './avisos-admin.css',
   './avisos-admin.js',
@@ -26,6 +27,30 @@ const ASSETS=[
 self.addEventListener('install',event=>{
   self.skipWaiting();
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
+});
+
+self.addEventListener('push',event=>{
+  let data={};
+  try{data=event.data?.json()||{}}catch(_){data={title:'IB Nova Família',body:event.data?.text()||'Você tem uma nova notificação.'}}
+  event.waitUntil(self.registration.showNotification(data.title||'IB Nova Família',{
+    body:data.body||'Você tem uma nova notificação.',
+    icon:'./photo_5143638454599093943_y.jpg',
+    badge:'./photo_5143638454599093943_y.jpg',
+    tag:data.tag||'ibnf-notificacao',
+    data:{url:data.url||'./'},
+    vibrate:[200,100,200]
+  }));
+});
+
+self.addEventListener('notificationclick',event=>{
+  event.notification.close();
+  const target=new URL(event.notification.data?.url||'./',self.location.origin).href;
+  event.waitUntil((async()=>{
+    const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
+    const existing=windows.find(client=>client.url.startsWith(self.location.origin));
+    if(existing){await existing.focus();if('navigate'in existing)await existing.navigate(target);return}
+    await self.clients.openWindow(target);
+  })());
 });
 
 self.addEventListener('activate',event=>{

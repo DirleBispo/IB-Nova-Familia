@@ -3,5 +3,8 @@
     { "source": "/cadastro", "destination": "/" },
     { "source": "/oracao", "destination": "/oracao.html" },
     { "source": "/24-horas-oracao", "destination": "/oracao.html" }
+  ],
+  "crons": [
+    { "path": "/api/birthday-notifications", "schedule": "0 10 * * *" }
   ]
 }

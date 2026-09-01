@@ -1,7 +1,7 @@
 (function(){
   if(!window.supabase||!window.IBNF_CONFIG?.SUPABASE_URL||!window.IBNF_CONFIG?.SUPABASE_ANON_KEY)return;
   const client=window.supabase.createClient(window.IBNF_CONFIG.SUPABASE_URL,window.IBNF_CONFIG.SUPABASE_ANON_KEY);
-  const restrictedViews=new Set(['pastoral','pessoas','financeiro','acessos','avisos-admin']);
+  const restrictedViews=new Set(['pastoral','pessoas','financeiro','acessos','avisos-admin','push-notifications']);
   let session=null,profile=null;
 
   function defaults(perfil){
@@ -23,6 +23,10 @@
       document.querySelectorAll(`[data-view="${view}"]`).forEach(el=>{
         const show=can(view); el.hidden=!show; el.setAttribute('aria-hidden',show?'false':'true');
       });
+    });
+    document.querySelectorAll('[data-view="push-notifications"]').forEach(el=>{
+      const show=!!session&&!!profile?.ativo&&['pastor','admin','secretaria'].includes(profile?.perfil);
+      el.hidden=!show;el.setAttribute('aria-hidden',show?'false':'true');
     });
   }
 
