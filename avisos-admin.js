@@ -23,7 +23,10 @@
     return `<article class="notice-admin-card ${notice.publicado?'is-published':'is-draft'}">
       <div class="notice-admin-card-head">
         <div><span class="notice-status">${status}</span><small>${formatDate(notice.criado_em)}</small></div>
-        <button class="secondary-action" type="button" data-edit-notice="${esc(notice.id)}">Editar</button>
+        <div class="notice-admin-actions">
+          <button class="secondary-action" type="button" data-edit-notice="${esc(notice.id)}">Editar</button>
+          <button class="danger-action" type="button" data-delete-notice="${esc(notice.id)}" data-delete-title="${esc(notice.titulo)}">Excluir</button>
+        </div>
       </div>
       <h4>${esc(notice.titulo)}</h4>
       <p>${esc(notice.texto)}</p>
@@ -86,6 +89,16 @@
     document.querySelector('#cancelNoticeEdit')?.addEventListener('click',()=>openNoticeAdmin());
     document.querySelector('#newNoticeBtn')?.addEventListener('click',()=>openNoticeAdmin());
     document.querySelectorAll('[data-edit-notice]').forEach(button=>button.addEventListener('click',()=>openNoticeAdmin(button.dataset.editNotice)));
+    document.querySelectorAll('[data-delete-notice]').forEach(button=>button.addEventListener('click',async()=>{
+      const id=button.dataset.deleteNotice;
+      const title=button.dataset.deleteTitle||'este aviso';
+      if(!confirm(`Excluir definitivamente o aviso “${title}”?`))return;
+      button.disabled=true;button.textContent='Excluindo...';
+      const response=await fetch('/api/notices-delete',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${access.session.access_token}`},body:JSON.stringify({id})});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok){alert(result.error||'Não foi possível excluir o aviso.');button.disabled=false;button.textContent='Excluir';return}
+      await openNoticeAdmin(null,'<div class="success">Aviso excluído com sucesso.</div>');
+    }));
   }
 
   async function openNoticeAdmin(editId=null,feedback=''){
