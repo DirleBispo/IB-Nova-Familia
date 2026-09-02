@@ -14,7 +14,7 @@ export default async function handler(request,response){
     if(!isTest&&!names.length)return response.status(200).json({sent:0,birthdays:0});
     const subscriptionsResponse=await adminFetch('push_subscriptions?ativo=eq.true&select=id,endpoint,p256dh,auth_key');
     const subscriptions=await subscriptionsResponse.json();
-    const body=isTest?'Notificações ativadas com sucesso neste celular.':names.length===1?`Hoje é aniversário de ${names[0]}. Toque para enviar os parabéns.`:`Hoje temos ${names.length} aniversariantes: ${names.join(', ')}.`;
+    const body=isTest?'Notificações ativadas com sucesso neste celular.':names.length===1?`Hoje é aniversário de ${names[0]}. Toque para compartilhar no grupo da igreja.`:`Hoje temos ${names.length} aniversariantes: ${names.join(', ')}. Toque para compartilhar no grupo.`;
     const payload=JSON.stringify({title:'IB Nova Família',body,tag:isTest?`teste-${Date.now()}`:`aniversarios-${today}`,url:isTest?'./':'/?view=aniversariantes'});
     let sent=0;
     await Promise.all(subscriptions.map(async item=>{

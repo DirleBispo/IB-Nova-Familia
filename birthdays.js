@@ -7,16 +7,10 @@
   const todayKey=()=>{const n=new Date();return `${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`};
   function nextBirthday(iso){if(!iso)return null;const [y,m,d]=String(iso).split('-').map(Number);if(!m||!d)return null;const base=todayStart();let next=new Date(base.getFullYear(),m-1,d);if(next<base)next=new Date(base.getFullYear()+1,m-1,d);return {date:next,birthYear:y}}
   function daysUntil(date){return Math.round((date-todayStart())/86400000)}
-  function normalizePhone(value){
-    let phone=String(value||'').replace(/\D/g,'');
-    if(!phone)return '';
-    if(phone.startsWith('00'))phone=phone.slice(2);
-    if(phone.length===10||phone.length===11)phone='55'+phone;
-    return phone;
-  }
-  function birthdayMessage(name){
-    const firstName=String(name||'').trim().split(/\s+/)[0]||'irmão(ã)';
-    return `Graça e paz, ${firstName}!\n\nHoje queremos agradecer a Deus por sua vida e desejar um feliz aniversário. Que o Senhor continue abençoando você e sua família, concedendo saúde, graça e muitos anos em Sua presença.\n\nCom carinho,\nIgreja Batista Nova Família.`;
+  function groupBirthdayMessage(items){
+    const names=items.map(item=>item.nome);
+    const people=names.length===1?names[0]:`${names.slice(0,-1).join(', ')} e ${names.at(-1)}`;
+    return `Graça e paz, irmãos!\n\nHoje celebramos com alegria o aniversário de ${people}!\n\nQue o Senhor abençoe grandemente ${names.length===1?'sua vida':'suas vidas'}, concedendo saúde, graça, alegria e muitos anos em Sua presença. Vamos juntos desejar um feliz aniversário!\n\nCom carinho,\nIgreja Batista Nova Família.`;
   }
   function renderPublic(items){
     if(!items.length)return '<div class="empty"><div>Hoje não há aniversariantes cadastrados.</div></div>';
@@ -27,24 +21,21 @@
     return items.map(p=>{
       const d=daysUntil(p.next);
       const label=d===0?'Hoje':d===1?'Amanhã':`Em ${d} dias`;
-      const phone=normalizePhone(p.telefone);
-      const action=d===0
-        ? phone
-          ? `<button type="button" class="primary birthday-whatsapp" data-phone="${esc(phone)}" data-name="${esc(p.nome)}">🎂 Enviar parabéns</button>`
-          : '<small class="birthday-no-phone">Telefone/WhatsApp não cadastrado.</small>'
-        : '';
-      return `<div class="birthday-card"><div class="birthday-date"><b>${String(p.next.getDate()).padStart(2,'0')}/${String(p.next.getMonth()+1).padStart(2,'0')}</b><small>${label}</small></div><div class="birthday-info"><strong>${esc(p.nome)}</strong>${action}</div></div>`;
+      return `<div class="birthday-card"><div class="birthday-date"><b>${String(p.next.getDate()).padStart(2,'0')}/${String(p.next.getMonth()+1).padStart(2,'0')}</b><small>${label}</small></div><div class="birthday-info"><strong>${esc(p.nome)}</strong>${d===0?'<span>Aniversariante de hoje</span>':''}</div></div>`;
     }).join('');
   }
-  function bindWhatsappButtons(){
-    document.querySelectorAll('.birthday-whatsapp').forEach(btn=>btn.addEventListener('click',()=>{
-      const phone=normalizePhone(btn.dataset.phone);
-      if(!phone){alert('Este membro não possui telefone/WhatsApp válido cadastrado.');return;}
-      const message=birthdayMessage(btn.dataset.name);
-      const url=`https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-      const opened=window.open(url,'_blank','noopener');
-      if(!opened)window.location.href=url;
-    }));
+  function bindGroupButton(todayItems){
+    const button=document.querySelector('#shareBirthdayGroup');
+    if(!button)return;
+    button.addEventListener('click',async()=>{
+      const message=groupBirthdayMessage(todayItems);
+      try{
+        if(navigator.share){await navigator.share({title:'Aniversariantes | IB Nova Família',text:message});return}
+        const url=`https://wa.me/?text=${encodeURIComponent(message)}`;
+        const opened=window.open(url,'_blank','noopener');
+        if(!opened)window.location.href=url;
+      }catch(error){if(error?.name!=='AbortError')alert('Não foi possível abrir o compartilhamento do WhatsApp.')}
+    });
   }
   async function openBirthdays(){
     if(typeof window.openPanel!=='function')return;
@@ -54,9 +45,11 @@
       const {data,error}=await client.from('pessoas').select('nome,nascimento,telefone').eq('ativo',true).eq('tipo','membro').not('nascimento','is',null);
       if(error){window.openPanel('Aniversariantes',`<div class="error-box">Não foi possível carregar os próximos aniversários: ${esc(error.message)}</div>`);return}
       const upcoming=(data||[]).map(p=>{const n=nextBirthday(p.nascimento);return n?{...p,next:n.date}:null}).filter(Boolean).filter(p=>{const d=daysUntil(p.next);return d>=0&&d<=7}).sort((a,b)=>a.next-b.next||a.nome.localeCompare(b.nome,'pt-BR'));
-      const html=`<div class="social-intro"><span class="section-kicker">Área interna</span><h3>Próximos 7 dias</h3><p>Usuários logados podem consultar antecipadamente os aniversários da semana. No dia do aniversário, o botão abre o WhatsApp com a mensagem pronta, sem uso da API paga.</p></div><div class="birthday-list">${renderPrivate(upcoming)}</div>`;
+      const todayItems=upcoming.filter(p=>daysUntil(p.next)===0);
+      const groupAction=todayItems.length?`<div class="birthday-group-action"><button type="button" class="primary" id="shareBirthdayGroup">🎂 Compartilhar no grupo da igreja</button><small>A mensagem com ${todayItems.length===1?'o aniversariante':'os aniversariantes'} de hoje já está pronta. Escolha o grupo da igreja no WhatsApp.</small></div>`:'';
+      const html=`<div class="social-intro"><span class="section-kicker">Área interna</span><h3>Próximos 7 dias</h3><p>Consulte antecipadamente os aniversários. Quando houver aniversariante no dia, compartilhe uma mensagem única no grupo da igreja.</p></div>${groupAction}<div class="birthday-list">${renderPrivate(upcoming)}</div>`;
       window.openPanel('Aniversariantes',html);
-      bindWhatsappButtons();
+      bindGroupButton(todayItems);
       return;
     }
     let data=null,error=null;
