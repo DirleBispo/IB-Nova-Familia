@@ -13,8 +13,25 @@
     const supported='serviceWorker'in navigator&&'PushManager'in window&&'Notification'in window;
     const permission=supported?Notification.permission:'unsupported';
     const active=permission==='granted'&&!!(await (await navigator.serviceWorker.ready).pushManager.getSubscription());
-    window.openPanel('Notificações',`<div class="social-intro"><span class="section-kicker">Aniversariantes</span><h3>Notificações no celular</h3><p>Receba um aviso da IB Nova Família pela manhã quando houver aniversariante.</p></div>${!supported?'<div class="error-box">Este navegador não suporta notificações. Instale o aplicativo pelo Chrome no Android.</div>':`<div class="setup-notice"><b>${active?'Notificações ativadas':'Ative neste celular'}</b><span>${active?'Este aparelho receberá os avisos de aniversário.':'Toque abaixo e permita as notificações quando o celular perguntar.'}</span></div><button id="pushEnableBtn" class="primary" type="button">${active?'Atualizar notificações':'Ativar notificações'}</button><div id="pushFeedback"></div>`}`);
+    window.openPanel('Notificações',`<div class="social-intro"><span class="section-kicker">Aniversariantes</span><h3>Notificações no celular</h3><p>Receba um aviso da IB Nova Família pela manhã quando houver aniversariante.</p></div>${!supported?'<div class="error-box">Este navegador não suporta notificações. Instale o aplicativo pelo Chrome no Android.</div>':`<div class="setup-notice"><b>${active?'Notificações ativadas':'Ative neste celular'}</b><span>${active?'Este aparelho receberá os avisos de aniversário.':'Toque abaixo e permita as notificações quando o celular perguntar.'}</span></div><button id="pushEnableBtn" class="primary" type="button">${active?'Atualizar notificações':'Ativar notificações'}</button>${active?'<button id="pushTestBtn" class="secondary" type="button">Enviar notificação de teste</button>':''}<div id="pushFeedback"></div>`}`);
     const btn=document.querySelector('#pushEnableBtn');if(btn)btn.onclick=subscribe;
+    const testBtn=document.querySelector('#pushTestBtn');if(testBtn)testBtn.onclick=testNotification;
+  }
+
+  async function testNotification(){
+    const feedback=document.querySelector('#pushFeedback');
+    const button=document.querySelector('#pushTestBtn');
+    if(button)button.disabled=true;
+    feedback.innerHTML='<div class="setup-notice">Enviando o teste...</div>';
+    try{
+      const {data:{session}}=await client.auth.getSession();
+      if(!session)throw new Error('Entre novamente na plataforma.');
+      const response=await fetch('/api/birthday-test',{method:'POST',headers:{'Authorization':`Bearer ${session.access_token}`}});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error||'Não foi possível enviar a notificação de teste.');
+      feedback.innerHTML='<div class="success">Teste enviado. Aguarde a notificação e toque nela para continuar.</div>';
+    }catch(error){feedback.innerHTML=`<div class="error-box">${String(error.message||error)}</div>`}
+    finally{if(button)button.disabled=false}
   }
 
   async function subscribe(){
@@ -35,8 +52,10 @@
   }
 
   window.showView=function(view){if(view==='push-notifications'){render();return}return previousShowView(view)};
-  const requestedView=new URLSearchParams(window.location.search).get('view');
+  const requestedParams=new URLSearchParams(window.location.search);
+  const requestedView=requestedParams.get('view');
   if(requestedView==='aniversariantes'){
+    window.IBNF_BIRTHDAY_TEST=requestedParams.get('testGroup')==='1';
     window.history.replaceState({},'',window.location.pathname);
     setTimeout(()=>window.showView('aniversariantes'),350);
   }

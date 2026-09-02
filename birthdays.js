@@ -44,10 +44,13 @@
     if(session){
       const {data,error}=await client.from('pessoas').select('nome,nascimento,telefone').eq('ativo',true).eq('tipo','membro').not('nascimento','is',null);
       if(error){window.openPanel('Aniversariantes',`<div class="error-box">Não foi possível carregar os próximos aniversários: ${esc(error.message)}</div>`);return}
-      const upcoming=(data||[]).map(p=>{const n=nextBirthday(p.nascimento);return n?{...p,next:n.date}:null}).filter(Boolean).filter(p=>{const d=daysUntil(p.next);return d>=0&&d<=7}).sort((a,b)=>a.next-b.next||a.nome.localeCompare(b.nome,'pt-BR'));
+      const isTest=window.IBNF_BIRTHDAY_TEST===true;
+      window.IBNF_BIRTHDAY_TEST=false;
+      const upcoming=isTest?[{nome:'Aniversariante de Teste',next:todayStart()}]:(data||[]).map(p=>{const n=nextBirthday(p.nascimento);return n?{...p,next:n.date}:null}).filter(Boolean).filter(p=>{const d=daysUntil(p.next);return d>=0&&d<=7}).sort((a,b)=>a.next-b.next||a.nome.localeCompare(b.nome,'pt-BR'));
       const todayItems=upcoming.filter(p=>daysUntil(p.next)===0);
       const groupAction=todayItems.length?`<div class="birthday-group-action"><button type="button" class="primary" id="shareBirthdayGroup">🎂 Compartilhar no grupo da igreja</button><small>A mensagem com ${todayItems.length===1?'o aniversariante':'os aniversariantes'} de hoje já está pronta. Escolha o grupo da igreja no WhatsApp.</small></div>`:'';
-      const html=`<div class="social-intro"><span class="section-kicker">Área interna</span><h3>Próximos 7 dias</h3><p>Consulte antecipadamente os aniversários. Quando houver aniversariante no dia, compartilhe uma mensagem única no grupo da igreja.</p></div>${groupAction}<div class="birthday-list">${renderPrivate(upcoming)}</div>`;
+      const testNotice=isTest?'<div class="setup-notice"><b>Modo de teste</b><span>Nenhum cadastro foi alterado e nada será enviado automaticamente.</span></div>':'';
+      const html=`<div class="social-intro"><span class="section-kicker">Área interna</span><h3>${isTest?'Teste de aniversário':'Próximos 7 dias'}</h3><p>${isTest?'Use o botão abaixo para conferir como a mensagem será compartilhada.':'Consulte antecipadamente os aniversários. Quando houver aniversariante no dia, compartilhe uma mensagem única no grupo da igreja.'}</p></div>${testNotice}${groupAction}<div class="birthday-list">${renderPrivate(upcoming)}</div>`;
       window.openPanel('Aniversariantes',html);
       bindGroupButton(todayItems);
       return;
