@@ -16,10 +16,26 @@
 
   async function openAvisos(){
     window.openPanel('Avisos','<div class="data-loading">Carregando avisos oficiais...</div>');
+    const {data:{session}}=await client.auth.getSession();
+    let canManage=false;
+    if(session){
+      const {data:profile}=await client.from('perfis').select('perfil,ativo,permissoes').eq('id',session.user.id).maybeSingle();
+      canManage=!!profile?.ativo&&(['pastor','admin','secretaria'].includes(profile.perfil)||profile.permissoes?.avisos===true);
+    }
     const {data,error}=await client.from('avisos').select('id,titulo,texto,publicado,criado_em').eq('publicado',true).order('criado_em',{ascending:false});
     if(error){window.openPanel('Avisos',`<div class="error-box">Não foi possível carregar os avisos: ${esc(error.message)}</div>`);return}
-    const list=(data||[]).map(a=>`<article class="official-notice"><div class="official-notice-top"><span>COMUNICADO OFICIAL</span><time>${new Date(a.criado_em).toLocaleDateString('pt-BR')}</time></div><h3>${esc(a.titulo)}</h3><p>${esc(a.texto)}</p></article>`).join('');
-    window.openPanel('Avisos',`<div class="social-intro"><span class="section-kicker">Canal oficial</span><h3>Comunicados da igreja</h3><p>Os avisos publicados aqui vêm diretamente do sistema da IB Nova Família.</p></div>${list||'<div class="empty"><div>Nenhum aviso publicado no momento.</div></div>'}`);
+    const list=(data||[]).map(a=>`<article class="official-notice"><div class="official-notice-top"><span>COMUNICADO OFICIAL</span><time>${new Date(a.criado_em).toLocaleDateString('pt-BR')}</time></div><h3>${esc(a.titulo)}</h3><p>${esc(a.texto)}</p>${canManage?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px"><button class="secondary-action" type="button" data-public-edit="${esc(a.id)}">Editar</button><button class="danger-action" type="button" data-public-delete="${esc(a.id)}" data-public-title="${esc(a.titulo)}">Excluir</button></div>`:''}</article>`).join('');
+    window.openPanel('Avisos',`<div class="social-intro"><span class="section-kicker">Canal oficial</span><h3>Comunicados da igreja</h3><p>Os avisos publicados aqui vêm diretamente do sistema da IB Nova Família.</p>${canManage?'<button class="primary" type="button" id="manageNoticesFromPublic">Gerenciar todos os avisos</button>':''}</div>${list||'<div class="empty"><div>Nenhum aviso publicado no momento.</div></div>'}`);
+    document.querySelector('#manageNoticesFromPublic')?.addEventListener('click',()=>window.ibnfAbrirGerenciarAvisos?.());
+    document.querySelectorAll('[data-public-edit]').forEach(button=>button.addEventListener('click',()=>window.ibnfAbrirGerenciarAvisos?.(button.dataset.publicEdit)));
+    document.querySelectorAll('[data-public-delete]').forEach(button=>button.addEventListener('click',async()=>{
+      if(!confirm(`Excluir definitivamente o aviso “${button.dataset.publicTitle||'selecionado'}”?`))return;
+      button.disabled=true;button.textContent='Excluindo...';
+      const response=await fetch('/api/notices-delete',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},body:JSON.stringify({id:button.dataset.publicDelete})});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok){alert(result.error||'Não foi possível excluir o aviso.');button.disabled=false;button.textContent='Excluir';return}
+      await openAvisos();
+    }));
   }
 
   function openOracao(){
