@@ -7,7 +7,20 @@ const weeklySchedule=[
 const dayNames=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 const monthNames=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
 function generateRecurringEvents(daysAhead=45){const now=new Date(),start=new Date(now.getFullYear(),now.getMonth(),now.getDate()),events=[];for(let offset=0;offset<daysAhead;offset++){const d=new Date(start);d.setDate(start.getDate()+offset);weeklySchedule.filter(s=>s.weekday===d.getDay()).forEach(s=>{const [h,m]=s.hora.split(':').map(Number),eventDate=new Date(d);eventDate.setHours(h,m,0,0);if(eventDate<now)return;events.push({dia:dayNames[d.getDay()],data:String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'),mes:monthNames[d.getMonth()],hora:s.hora,titulo:s.titulo,ts:eventDate.getTime()})})}return events.sort((a,b)=>a.ts-b.ts)}
-const state={eventos:generateRecurringEvents(),pessoas:JSON.parse(localStorage.getItem('ibnf_pessoas')||'[]'),aniversariantes:JSON.parse(localStorage.getItem('ibnf_aniversariantes')||'[]'),avisos:JSON.parse(localStorage.getItem('ibnf_avisos')||'null')||[{titulo:'Bem-vindo ao app',texto:'Este será o canal oficial de informações da IB Nova Família.'}],user:null,perfil:null};
+function readStoredArray(key,fallback=[]){
+  try{
+    const raw=localStorage.getItem(key);
+    if(raw===null)return fallback;
+    const value=JSON.parse(raw);
+    if(Array.isArray(value))return value;
+  }catch(error){
+    console.warn(`[IBNF] Dados locais inválidos em ${key}; usando o padrão seguro.`);
+  }
+  try{localStorage.removeItem(key)}catch(_){}
+  return fallback;
+}
+const defaultNotices=[{titulo:'Bem-vindo ao app',texto:'Este será o canal oficial de informações da IB Nova Família.'}];
+const state={eventos:generateRecurringEvents(),pessoas:readStoredArray('ibnf_pessoas'),aniversariantes:readStoredArray('ibnf_aniversariantes'),avisos:readStoredArray('ibnf_avisos',defaultNotices),user:null,perfil:null};
 const panel=document.querySelector('#contentPanel'),modules=document.querySelector('#moduleGrid'),nextSection=document.querySelector('.next-section');
 let supa=null;
 function supabaseReady(){return !!(window.IBNF_CONFIG?.SUPABASE_URL&&window.IBNF_CONFIG?.SUPABASE_ANON_KEY&&window.supabase)}
@@ -45,6 +58,11 @@ if(view==='acessos'){if(!isAdmin()){openPanel('Gerenciar acessos','<div class="e
 if(view==='menu'){openPanel('Menu','<div class="list-item"><b>Administração</b><small>Cadastros, permissões e configurações.</small></div><div class="list-item"><b>Configurações</b><small>Aparência, notificações e conta.</small></div><div class="list-item"><b>Redes Sociais</b><small>Instagram, Facebook e WhatsApp oficiais da igreja.</small></div>');return}}
 function renderPeople(){const el=document.querySelector('#pessoasLista');if(!el)return;el.innerHTML=state.pessoas.length?'<h3 style="margin-top:20px">Cadastrados</h3>'+state.pessoas.map(p=>`<div class="list-item"><b>${esc(p.nome)}</b><small>${esc(p.telefone||'Sem telefone')}</small></div>`).join(''):'<div class="empty"><div>Nenhuma pessoa cadastrada.</div></div>'}
 function renderBirthdays(){const el=document.querySelector('#aniLista');if(!el)return;el.innerHTML=state.aniversariantes.length?'<h3 style="margin-top:20px">Cadastrados</h3>'+state.aniversariantes.map(p=>`<div class="list-item"><b>${esc(p.nome)}</b><small>${esc(p.data)}</small></div>`).join(''):'<div class="empty"><div>Nenhum aniversariante cadastrado.</div></div>'}
-document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>showView(btn.dataset.view)));
+document.addEventListener('click',event=>{
+  const trigger=event.target instanceof Element?event.target.closest('[data-view]'):null;
+  if(!trigger||trigger.disabled||!trigger.dataset.view)return;
+  const navigate=window.showView;
+  if(typeof navigate==='function')navigate(trigger.dataset.view);
+});
 let deferredPrompt;const installBtn=document.querySelector('#installBtn');window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;installBtn.hidden=false});installBtn.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;installBtn.hidden=true});if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'))}
 renderEvents();loadSession();

@@ -4,8 +4,18 @@
   let restoring=false;
   let sequence=Number(window.history.state?.ibnfSequence||0);
 
+  function updateHistory(method,state){
+    try{
+      window.history[method](state,'',window.location.href);
+      return true;
+    }catch(error){
+      console.warn('[IBNF] O histórico não pôde ser atualizado; a navegação continuará normalmente.');
+      return false;
+    }
+  }
+
   if(!window.history.state?.ibnfView){
-    window.history.replaceState({ibnfView:'inicio',ibnfSequence:0},'',window.location.href);
+    updateHistory('replaceState',{ibnfView:'inicio',ibnfSequence:0});
     sequence=0;
   }
 
@@ -13,7 +23,7 @@
     const target=view||'inicio';
     if(!restoring&&window.history.state?.ibnfView!==target){
       sequence+=1;
-      window.history.pushState({ibnfView:target,ibnfSequence:sequence},'',window.location.href);
+      updateHistory('pushState',{ibnfView:target,ibnfSequence:sequence});
     }
     return baseShowView(target);
   };

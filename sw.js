@@ -1,4 +1,4 @@
-const CACHE='ibnf-v18';
+const CACHE='ibnf-v19';
 const ASSETS=[
   './',
   './index.html',
@@ -10,10 +10,13 @@ const ASSETS=[
   './icon-maskable-512.png',
   './apple-touch-icon.png',
   './members-admin.css',
+  './members-admin.js',
   './birthdays.css',
   './birthday-share.css',
+  './birthdays.js',
   './push-notifications.js',
   './community-data.css',
+  './community-data.js',
   './avisos-admin.css',
   './avisos-admin.js',
   './agenda-admin.css',
@@ -24,8 +27,17 @@ const ASSETS=[
   './departamentos-admin.js',
   './app-history.js',
   './pastoral-dashboard.css',
+  './pastoral-dashboard.js',
+  './access-control.js',
+  './pastoral-home.css',
+  './pastoral-home.js',
   './financeiro.css',
   './financeiro.js',
+  './acolhimento.css',
+  './acolhimento.js',
+  './navigation-behavior.js',
+  './menu-functional.css',
+  './menu-functional.js',
   './home-organizada.css',
   './home-organizada.js',
   './campaign.css',
@@ -78,11 +90,16 @@ self.addEventListener('fetch',event=>{
   event.respondWith((async()=>{
     try{
       const fresh=await fetch(event.request);
-      const cache=await caches.open(CACHE);
-      cache.put(event.request,fresh.clone());
+      if(fresh.ok||fresh.type==='opaque'){
+        const cache=await caches.open(CACHE);
+        cache.put(event.request,fresh.clone());
+      }
       return fresh;
     }catch(error){
-      return (await caches.match(event.request)) || (await caches.match('./index.html'));
+      const cached=await caches.match(event.request);
+      if(cached)return cached;
+      if(event.request.mode==='navigate')return caches.match('./index.html');
+      return Response.error();
     }
   })());
 });
