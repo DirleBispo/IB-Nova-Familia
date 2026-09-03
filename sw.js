@@ -1,4 +1,4 @@
-const CACHE='ibnf-v19';
+const CACHE='ibnf-v20';
 const ASSETS=[
   './',
   './index.html',
@@ -11,6 +11,9 @@ const ASSETS=[
   './apple-touch-icon.png',
   './members-admin.css',
   './members-admin.js',
+  './cadastro-permissoes.css',
+  './cadastro-acesso.js',
+  './admin-permissoes.js',
   './birthdays.css',
   './birthday-share.css',
   './birthdays.js',

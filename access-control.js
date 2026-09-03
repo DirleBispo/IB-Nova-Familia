@@ -2,7 +2,7 @@
   if(!window.supabase||!window.IBNF_CONFIG?.SUPABASE_URL||!window.IBNF_CONFIG?.SUPABASE_ANON_KEY)return;
   const client=window.supabase.createClient(window.IBNF_CONFIG.SUPABASE_URL,window.IBNF_CONFIG.SUPABASE_ANON_KEY);
   const restrictedViews=new Set(['pastoral','pessoas','financeiro','acessos','avisos-admin','push-notifications']);
-  let session=null,profile=null;
+  let session=null,profile=null,refreshing=false;
 
   function defaults(perfil){
     if(perfil==='admin'||perfil==='pastor')return {pastoral:true,pessoas:true,financeiro:true,acessos:true,avisos:true};
@@ -14,9 +14,9 @@
     if(!session||!profile?.ativo)return false;
     const permission=view==='avisos-admin'?'avisos':view;
     const d=defaults(profile.perfil),p=profile.permissoes||{};
-    return p[permission]===true || (p[permission]!==false && d[permission]===true);
+    return d[permission]===true || p[permission]===true;
   }
-  window.IBNF_ACCESS={can,getProfile:()=>profile,isApproved:()=>!!profile?.ativo};
+  window.IBNF_ACCESS={can,getProfile:()=>profile,isApproved:()=>!!profile?.ativo,refresh:refreshAuth};
 
   function applyVisibility(){
     ['pastoral','pessoas','financeiro','avisos-admin'].forEach(view=>{
@@ -27,13 +27,19 @@
   }
 
   async function refreshAuth(){
-    const {data}=await client.auth.getSession();
-    session=data.session||null; profile=null;
-    if(session){
-      const {data:p}=await client.from('perfis').select('id,nome,perfil,ativo,permissoes').eq('id',session.user.id).maybeSingle();
-      profile=p||null;
+    if(refreshing)return;
+    refreshing=true;
+    try{
+      const {data}=await client.auth.getSession();
+      session=data.session||null; profile=null;
+      if(session){
+        const {data:p}=await client.from('perfis').select('id,nome,perfil,ativo,permissoes').eq('id',session.user.id).maybeSingle();
+        profile=p||null;
+      }
+      applyVisibility();
+    }finally{
+      refreshing=false;
     }
-    applyVisibility();
   }
 
   const previousShowView=window.showView;
@@ -50,5 +56,7 @@
   };
 
   client.auth.onAuthStateChange(()=>setTimeout(refreshAuth,50));
+  window.addEventListener('focus',refreshAuth);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshAuth()});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refreshAuth);else refreshAuth();
 })();
