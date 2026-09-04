@@ -7,7 +7,7 @@
   async function render(){
     const {data:{session}}=await client.auth.getSession();
     const profile=window.IBNF_ACCESS?.getProfile?.();
-    if(!session||!profile?.ativo||!['pastor','admin','secretaria'].includes(profile.perfil)){
+    if(!session||!profile?.ativo||!['pastor','admin'].includes(profile.perfil)){
       window.openPanel('Notificações','<div class="error-box">Esta função está disponível somente para a administração.</div>');return;
     }
     const supported='serviceWorker'in navigator&&'PushManager'in window&&'Notification'in window;
