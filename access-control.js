@@ -1,14 +1,14 @@
 (function(){
   if(!window.supabase||!window.IBNF_CONFIG?.SUPABASE_URL||!window.IBNF_CONFIG?.SUPABASE_ANON_KEY)return;
   const client=window.supabase.createClient(window.IBNF_CONFIG.SUPABASE_URL,window.IBNF_CONFIG.SUPABASE_ANON_KEY);
-  const restrictedViews=new Set(['pastoral','pessoas','financeiro','acessos','avisos-admin','push-notifications']);
+  const restrictedViews=new Set(['pastoral','pessoas','financeiro','acessos','avisos-admin','push-notifications','secretaria']);
   let session=null,profile=null,refreshing=false;
 
   function defaults(perfil){
-    if(perfil==='admin'||perfil==='pastor')return {pastoral:true,pessoas:true,financeiro:true,acessos:true,avisos:true};
-    if(perfil==='tesouraria')return {pastoral:false,pessoas:false,financeiro:true,acessos:false,avisos:false};
-    if(perfil==='secretaria')return {pastoral:false,pessoas:true,financeiro:false,acessos:false,avisos:true};
-    return {pastoral:false,pessoas:false,financeiro:false,acessos:false,avisos:false};
+    if(perfil==='admin'||perfil==='pastor')return {pastoral:true,pessoas:true,financeiro:true,acessos:true,avisos:true,secretaria:true};
+    if(perfil==='tesouraria')return {pastoral:false,pessoas:false,financeiro:true,acessos:false,avisos:false,secretaria:false};
+    if(perfil==='secretaria')return {pastoral:false,pessoas:true,financeiro:false,acessos:false,avisos:true,secretaria:true};
+    return {pastoral:false,pessoas:false,financeiro:false,acessos:false,avisos:false,secretaria:false};
   }
   function can(view){
     if(!session||!profile?.ativo)return false;
@@ -19,7 +19,7 @@
   window.IBNF_ACCESS={can,getProfile:()=>profile,isApproved:()=>!!profile?.ativo,refresh:refreshAuth};
 
   function applyVisibility(){
-    ['pastoral','pessoas','financeiro','avisos-admin'].forEach(view=>{
+    ['pastoral','pessoas','financeiro','avisos-admin','secretaria'].forEach(view=>{
       document.querySelectorAll(`[data-view="${view}"]`).forEach(el=>{
         const show=can(view); el.hidden=!show; el.setAttribute('aria-hidden',show?'false':'true');
       });

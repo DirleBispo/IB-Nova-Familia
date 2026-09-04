@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="agenda-admin.css">
 <link rel="stylesheet" href="estudos-admin.css">
 <link rel="stylesheet" href="departamentos-admin.css">
+<link rel="stylesheet" href="secretaria-dashboard.css">
 <link rel="stylesheet" href="pastoral-dashboard.css">
 <link rel="stylesheet" href="pastoral-home.css">
 <link rel="stylesheet" href="financeiro.css">
@@ -183,6 +184,14 @@
 <button class="calendar-btn" data-view="menu">Ver todos</button>
 </div>
 <div class="module-grid" id="moduleGrid">
+<button class="module-card" data-view="secretaria" hidden aria-hidden="true">
+<span class="icon-wrap">✎</span>
+<span class="module-copy">
+<strong>Secretaria</strong>
+<small>Membros, agenda, avisos e equipes</small>
+</span>
+<span class="chevron">›</span>
+</button>
 <button class="module-card" data-view="avisos-admin" hidden aria-hidden="true">
 <span class="icon-wrap">♢</span>
 <span class="module-copy">
@@ -360,6 +369,8 @@
 <script src="estudos-admin.js">
 </script>
 <script src="departamentos-admin.js">
+</script>
+<script src="secretaria-dashboard.js">
 </script>
 <script src="push-notifications.js">
 </script>
