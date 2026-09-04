@@ -15,6 +15,7 @@
   }
 
   async function openAvisos(){
+    window.setNav?.('notificacoes');
     window.openPanel('Avisos','<div class="data-loading">Carregando avisos oficiais...</div>');
     const {data:{session}}=await client.auth.getSession();
     let canManage=false;

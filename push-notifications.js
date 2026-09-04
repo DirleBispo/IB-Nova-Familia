@@ -8,12 +8,12 @@
     const {data:{session}}=await client.auth.getSession();
     const profile=window.IBNF_ACCESS?.getProfile?.();
     if(!session||!profile?.ativo||!['pastor','admin'].includes(profile.perfil)){
-      window.openPanel('Notificações','<div class="error-box">Esta função está disponível somente para a administração.</div>');return;
+      window.openPanel('Alertas de aniversário','<div class="error-box">Esta função está disponível somente para a administração.</div>');return;
     }
     const supported='serviceWorker'in navigator&&'PushManager'in window&&'Notification'in window;
     const permission=supported?Notification.permission:'unsupported';
     const active=permission==='granted'&&!!(await (await navigator.serviceWorker.ready).pushManager.getSubscription());
-    window.openPanel('Notificações',`<div class="social-intro"><span class="section-kicker">Aniversariantes</span><h3>Notificações no celular</h3><p>Receba um aviso da IB Nova Família pela manhã quando houver aniversariante.</p></div>${!supported?'<div class="error-box">Este navegador não suporta notificações. Instale o aplicativo pelo Chrome no Android.</div>':`<div class="setup-notice"><b>${active?'Notificações ativadas':'Ative neste celular'}</b><span>${active?'Este aparelho receberá os avisos de aniversário.':'Toque abaixo e permita as notificações quando o celular perguntar.'}</span></div><button id="pushEnableBtn" class="primary" type="button">${active?'Atualizar notificações':'Ativar notificações'}</button>${active?'<button id="pushTestBtn" class="secondary" type="button">Enviar notificação de teste</button>':''}<div id="pushFeedback"></div>`}`);
+    window.openPanel('Alertas de aniversário',`<div class="social-intro"><span class="section-kicker">Aniversariantes</span><h3>Alertas no celular</h3><p>Receba um aviso da IB Nova Família pela manhã quando houver aniversariante.</p></div>${!supported?'<div class="error-box">Este navegador não suporta notificações. Instale o aplicativo pelo Chrome no Android.</div>':`<div class="setup-notice"><b>${active?'Alertas ativados':'Ative neste celular'}</b><span>${active?'Este aparelho receberá os avisos de aniversário.':'Toque abaixo e permita as notificações quando o celular perguntar.'}</span></div><button id="pushEnableBtn" class="primary" type="button">${active?'Atualizar alertas':'Ativar alertas'}</button>${active?'<button id="pushTestBtn" class="secondary" type="button">Enviar notificação de teste</button>':''}<div id="pushFeedback"></div>`}`);
     const btn=document.querySelector('#pushEnableBtn');if(btn)btn.onclick=subscribe;
     const testBtn=document.querySelector('#pushTestBtn');if(testBtn)testBtn.onclick=testNotification;
   }

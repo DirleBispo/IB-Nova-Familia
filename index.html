@@ -30,6 +30,7 @@
 <link rel="stylesheet" href="menu-functional.css">
 <link rel="stylesheet" href="home-organizada.css">
 <link rel="stylesheet" href="campaign.css">
+<link rel="stylesheet" href="visual-polish.css">
 </head>
 <body>
 <header class="app-header">
@@ -185,20 +186,21 @@
 </div>
 <button class="calendar-btn" data-view="menu">Ver todos</button>
 </div>
-<div class="module-grid" id="moduleGrid">
+<div class="resource-groups" id="moduleGrid">
+<section class="resource-group" aria-labelledby="resourceManagementTitle">
+<div class="resource-group-heading">
+<div>
+<span class="section-kicker">Administração</span>
+<h3 id="resourceManagementTitle">Gestão e cuidado</h3>
+</div>
+<p>Cadastros, acompanhamento e tesouraria</p>
+</div>
+<div class="module-grid">
 <button class="module-card" data-view="secretaria" hidden aria-hidden="true">
 <span class="icon-wrap">✎</span>
 <span class="module-copy">
 <strong>Secretaria</strong>
-<small>Membros, agenda, avisos e equipes</small>
-</span>
-<span class="chevron">›</span>
-</button>
-<button class="module-card" data-view="avisos-admin" hidden aria-hidden="true">
-<span class="icon-wrap">♢</span>
-<span class="module-copy">
-<strong>Gerenciar avisos</strong>
-<small>Criar, editar e publicar comunicados</small>
+<small>Membros, agenda, avisos e estudos</small>
 </span>
 <span class="chevron">›</span>
 </button>
@@ -212,42 +214,12 @@
 <span class="chevron">›</span>
 </button>
 <button class="module-card" data-view="pessoas">
-<span class="icon-wrap">👥</span>
+<span class="icon-wrap">
+<svg class="module-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+</span>
 <span class="module-copy">
 <strong>Pessoas</strong>
 <small>Membros e visitantes</small>
-</span>
-<span class="chevron">›</span>
-</button>
-<button class="module-card" data-view="push-notifications">
-<span class="icon-wrap">🔔</span>
-<span class="module-copy">
-<strong>Notificações</strong>
-<small>Receba os aniversariantes no celular</small>
-</span>
-<span class="chevron">›</span>
-</button>
-<button class="module-card" data-view="departamentos">
-<span class="icon-wrap">⌘</span>
-<span class="module-copy">
-<strong>Departamentos</strong>
-<small>Ministérios e equipes</small>
-</span>
-<span class="chevron">›</span>
-</button>
-<button class="module-card" data-view="midia">
-<span class="icon-wrap">▣</span>
-<span class="module-copy">
-<strong>Mídia</strong>
-<small>Equipe e arquivos pelo Google Drive</small>
-</span>
-<span class="chevron">›</span>
-</button>
-<button class="module-card" data-view="grupos">
-<span class="icon-wrap">▦</span>
-<span class="module-copy">
-<strong>Grupos</strong>
-<small>Comunhão e células</small>
 </span>
 <span class="chevron">›</span>
 </button>
@@ -256,6 +228,34 @@
 <span class="module-copy">
 <strong>Financeiro</strong>
 <small>Tesouraria e relatórios</small>
+</span>
+<span class="chevron">›</span>
+</button>
+</div>
+</section>
+
+<section class="resource-group" aria-labelledby="resourceMinistriesTitle">
+<div class="resource-group-heading">
+<div>
+<span class="section-kicker">Participação</span>
+<h3 id="resourceMinistriesTitle">Ministérios e conteúdo</h3>
+</div>
+<p>Equipes, comunhão e formação cristã</p>
+</div>
+<div class="module-grid">
+<button class="module-card" data-view="departamentos">
+<span class="icon-wrap">⌘</span>
+<span class="module-copy">
+<strong>Departamentos</strong>
+<small>Ministérios e equipes</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="grupos">
+<span class="icon-wrap">▦</span>
+<span class="module-copy">
+<strong>Grupos</strong>
+<small>Comunhão e células</small>
 </span>
 <span class="chevron">›</span>
 </button>
@@ -283,27 +283,65 @@
 </span>
 <span class="chevron">›</span>
 </button>
+</div>
+</section>
+
+<section class="resource-group" aria-labelledby="resourceCommunicationTitle">
+<div class="resource-group-heading">
+<div>
+<span class="section-kicker">Comunicação</span>
+<h3 id="resourceCommunicationTitle">Mídia e informações</h3>
+</div>
+<p>Avisos, canais e materiais da igreja</p>
+</div>
+<div class="module-grid">
+<button class="module-card" data-view="avisos-admin" hidden aria-hidden="true">
+<span class="icon-wrap">♢</span>
+<span class="module-copy">
+<strong>Gerenciar avisos</strong>
+<small>Criar, editar e publicar comunicados</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="push-notifications">
+<span class="icon-wrap">
+<svg class="module-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+</span>
+<span class="module-copy">
+<strong>Alertas de aniversário</strong>
+<small>Ative os avisos neste celular</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="midia">
+<span class="icon-wrap">▣</span>
+<span class="module-copy">
+<strong>Equipe de Mídia</strong>
+<small>Equipe e materiais do Google Drive</small>
+</span>
+<span class="chevron">›</span>
+</button>
 <button class="module-card" data-view="fotos">
 <span class="icon-wrap">▣</span>
 <span class="module-copy">
-<strong>Fotos</strong>
-<small>Galeria da igreja</small>
+<strong>Galeria de Fotos</strong>
+<small>Álbuns da igreja</small>
 </span>
 <span class="chevron">›</span>
 </button>
 <button class="module-card" data-view="videos">
 <span class="icon-wrap">▶</span>
 <span class="module-copy">
-<strong>Vídeos</strong>
-<small>Cultos e conteúdos</small>
+<strong>Vídeos dos Cultos</strong>
+<small>Cultos e outros conteúdos</small>
 </span>
 <span class="chevron">›</span>
 </button>
 <button class="module-card" data-view="arquivos">
 <span class="icon-wrap">▱</span>
 <span class="module-copy">
-<strong>Arquivos</strong>
-<small>Documentos oficiais</small>
+<strong>Documentos Oficiais</strong>
+<small>Arquivos e documentos da igreja</small>
 </span>
 <span class="chevron">›</span>
 </button>
@@ -315,6 +353,8 @@
 </span>
 <span class="chevron">›</span>
 </button>
+</div>
+</section>
 </div>
 </section>
 </div>
@@ -338,8 +378,8 @@
 <small>Avisos</small>
 </button>
 <button data-view="perfil">
-<span class="avatar-mini">
-<img src="photo_5143638454599093943_y.jpg" alt="">
+<span class="nav-icon profile-nav-icon">
+<svg class="nav-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>
 </span>
 <small>Perfil</small>
 </button>

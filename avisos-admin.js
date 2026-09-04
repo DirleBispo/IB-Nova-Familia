@@ -103,6 +103,7 @@
 
   async function openNoticeAdmin(editId=null,feedback=''){
     if(typeof window.openPanel!=='function')return;
+    window.setNav?.('notificacoes');
     window.openPanel('Gerenciar avisos','<div class="data-loading">Carregando avisos...</div>');
     const access=await editorAccess();
     if(!access.allowed){

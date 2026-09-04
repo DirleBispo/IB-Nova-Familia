@@ -1,4 +1,4 @@
-const CACHE='ibnf-v25';
+const CACHE='ibnf-v26';
 const ASSETS=[
   './',
   './index.html',
@@ -48,6 +48,7 @@ const ASSETS=[
   './home-organizada.css',
   './home-organizada.js',
   './campaign.css',
+  './visual-polish.css',
   './oracao.html',
   './oracao.css',
   './oracao.js',
