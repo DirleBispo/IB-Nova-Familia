@@ -13,6 +13,17 @@
     if(drive)return `https://drive.google.com/thumbnail?id=${encodeURIComponent(drive[1])}&sz=w1200`;
     return value;
   }
+  function photoPreview(item,url){
+    if(item.tipo!=='foto'||!url)return icon(item.tipo);
+    return `<img data-media-preview src="${safe(previewUrl(url))}" alt="" loading="lazy"><div class="media-preview-fallback" hidden><span>▧</span><strong>Foto do álbum</strong><small>Abra no Google Drive</small></div>`;
+  }
+  function bindPreviewFallbacks(){
+    document.querySelectorAll('[data-media-preview]').forEach(image=>{
+      const fallback=()=>{image.hidden=true;const cover=image.nextElementSibling;if(cover)cover.hidden=false};
+      image.addEventListener('error',fallback,{once:true});
+      if(image.complete&&!image.naturalWidth)fallback();
+    });
+  }
   function memberRows(rows){
     if(!rows.length)return '<div class="media-empty">A equipe de mídia ainda não possui integrantes cadastrados.</div>';
     return rows.map(row=>{const name=row.nome||row.pessoas?.nome||'Integrante';return `<div class="media-person"><span class="media-person-avatar">${safe(name.split(/\s+/).slice(0,2).map(part=>part[0]).join('').toUpperCase())}</span><span><strong>${safe(name)}</strong><small>${safe(row.funcao||'Equipe de mídia')}</small></span></div>`}).join('');
@@ -20,7 +31,7 @@
   async function card(item){
     let url=item.url_externa||'';
     if(item.arquivo_path){const {data}=await client.storage.from('midia').createSignedUrl(item.arquivo_path,3600);url=data?.signedUrl||''}
-    const preview=item.tipo==='foto'&&url?`<img src="${safe(previewUrl(url))}" alt="${safe(item.nome)}" loading="lazy">`:icon(item.tipo);
+    const preview=photoPreview(item,url);
     return `<article class="media-card"><div class="media-preview">${preview}</div><div class="media-card-body"><span class="section-kicker">${title(item.tipo)}</span><h4>${safe(item.nome)}</h4><p>${safe(item.descricao||'Arquivo da equipe de mídia')}</p><div class="media-actions">${url?`<a href="${safe(url)}" target="_blank" rel="noopener">${item.tipo==='video_link'?'Assistir':'Abrir'}</a>`:''}${manager?`<button type="button" class="danger" data-media-delete="${safe(item.id)}" data-media-path="${safe(item.arquivo_path||'')}">Excluir</button>`:''}</div></div></article>`;
   }
   async function openMedia(message=''){
@@ -37,6 +48,7 @@
     items=filesResult.data||[];
     const cards=await Promise.all(items.map(card));
     window.openPanel('Mídia',`${message}<div class="social-intro"><span class="section-kicker">Comunicação</span><h3>Equipe de Mídia</h3><p>Fotos, documentos e vídeos da comunicação da IB Nova Família. Esta área é pública; para administrar, entre em Meu acesso.</p></div><div class="media-section-head"><h3>Integrantes</h3>${manager?'<button class="secondary-action" id="mediaManageTeam">Gerenciar equipe</button>':''}</div><div class="media-team">${memberRows(teamResult.data||[])}</div><div class="media-section-head"><h3>Arquivos</h3></div>${manager?'<div class="media-toolbar"><button class="primary" id="mediaAddLink">+ Adicionar link do Drive</button></div>':''}<div class="media-grid">${cards.join('')||'<div class="media-empty">Nenhum arquivo publicado ainda.</div>'}</div>`);
+    bindPreviewFallbacks();
     document.querySelector('#mediaManageTeam')?.addEventListener('click',()=>window.showView('departamentos'));
     document.querySelector('#mediaAddLink')?.addEventListener('click',openLink);
     document.querySelectorAll('[data-media-delete]').forEach(button=>button.addEventListener('click',()=>removeItem(button.dataset.mediaDelete,button.dataset.mediaPath)));
