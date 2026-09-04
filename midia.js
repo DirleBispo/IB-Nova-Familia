@@ -14,8 +14,9 @@
     return value;
   }
   function photoPreview(item,url){
-    if(item.tipo!=='foto'||!url)return icon(item.tipo);
-    return `<img data-media-preview src="${safe(previewUrl(url))}" alt="" loading="lazy"><div class="media-preview-fallback" hidden><span>▧</span><strong>Foto do álbum</strong><small>Abra no Google Drive</small></div>`;
+    const cover=item.capa_url||url;
+    if(item.tipo!=='foto'||!cover)return icon(item.tipo);
+    return `<img data-media-preview src="${safe(previewUrl(cover))}" alt="" loading="lazy"><div class="media-preview-fallback" hidden><span>▧</span><strong>Foto do álbum</strong><small>Abra no Google Drive</small></div>`;
   }
   function bindPreviewFallbacks(){
     document.querySelectorAll('[data-media-preview]').forEach(image=>{
@@ -32,7 +33,7 @@
     let url=item.url_externa||'';
     if(item.arquivo_path){const {data}=await client.storage.from('midia').createSignedUrl(item.arquivo_path,3600);url=data?.signedUrl||''}
     const preview=photoPreview(item,url);
-    return `<article class="media-card"><div class="media-preview">${preview}</div><div class="media-card-body"><span class="section-kicker">${title(item.tipo)}</span><h4>${safe(item.nome)}</h4><p>${safe(item.descricao||'Arquivo da equipe de mídia')}</p><div class="media-actions">${url?`<a href="${safe(url)}" target="_blank" rel="noopener">${item.tipo==='video_link'?'Assistir':'Abrir'}</a>`:''}${manager?`<button type="button" class="danger" data-media-delete="${safe(item.id)}" data-media-path="${safe(item.arquivo_path||'')}">Excluir</button>`:''}</div></div></article>`;
+    return `<article class="media-card"><div class="media-preview">${preview}</div><div class="media-card-body"><span class="section-kicker">${title(item.tipo)}</span><h4>${safe(item.nome)}</h4><p>${safe(item.descricao||'Arquivo da equipe de mídia')}</p><div class="media-actions">${url?`<a href="${safe(url)}" target="_blank" rel="noopener">${item.tipo==='video_link'?'Assistir':item.tipo==='foto'?'Ver álbum':'Abrir'}</a>`:''}${manager?`<button type="button" class="danger" data-media-delete="${safe(item.id)}" data-media-path="${safe(item.arquivo_path||'')}">Excluir</button>`:''}</div></div></article>`;
   }
   async function openMedia(message=''){
     window.openPanel('Mídia','<div class="members-loading">Carregando espaço da mídia...</div>');
@@ -55,9 +56,9 @@
   }
   function openLink(){
     if(!manager)return;
-    window.openPanel('Adicionar arquivo por link',`<form class="media-form" id="mediaLinkForm"><label>Tipo<select name="tipo" required><option value="foto">Foto</option><option value="documento">Documento ou PDF</option><option value="video_link">Vídeo</option></select></label><label>Título<input name="nome" maxlength="100" required placeholder="Ex.: Culto da Família"></label><label>Descrição<textarea name="descricao" maxlength="300" placeholder="Data ou informações sobre o arquivo"></textarea></label><label>Link público do Google Drive<input name="url" type="url" required placeholder="https://drive.google.com/..."></label><div class="media-limit">No Google Drive, deixe o arquivo como “Qualquer pessoa com o link — Leitor”. Nada será armazenado na plataforma.</div><button class="primary">Publicar link</button><button type="button" class="secondary-action" id="mediaCancel">Cancelar</button><div id="mediaFeedback"></div></form>`);
+    window.openPanel('Adicionar arquivo por link',`<form class="media-form" id="mediaLinkForm"><label>Tipo<select name="tipo" required><option value="foto">Álbum de fotos</option><option value="documento">Documento ou PDF</option><option value="video_link">Vídeo</option></select></label><label>Título<input name="nome" maxlength="100" required placeholder="Ex.: Culto da Família"></label><label>Descrição<textarea name="descricao" maxlength="300" placeholder="Data ou informações sobre o arquivo"></textarea></label><label>Link público do álbum ou arquivo no Google Drive<input name="url" type="url" required placeholder="https://drive.google.com/..."></label><label>Link de uma foto para usar como capa (opcional)<input name="capa_url" type="url" placeholder="Abra uma foto do álbum e cole o link dela"></label><div class="media-limit">Compartilhe a pasta e a foto de capa como “Qualquer pessoa com o link — Leitor”. A foto ficará no Google Drive e aparecerá como prévia do álbum.</div><button class="primary">Publicar link</button><button type="button" class="secondary-action" id="mediaCancel">Cancelar</button><div id="mediaFeedback"></div></form>`);
     document.querySelector('#mediaCancel').onclick=()=>openMedia();
-    document.querySelector('#mediaLinkForm').onsubmit=async event=>{event.preventDefault();const data=new FormData(event.currentTarget),feedback=document.querySelector('#mediaFeedback'),url=String(data.get('url')).trim(),tipo=String(data.get('tipo'));if(!/^https:\/\//i.test(url)){feedback.innerHTML='<div class="error-box">Informe um link válido iniciado por https://</div>';return}const {error}=await client.from('midia_arquivos').insert({nome:String(data.get('nome')).trim(),descricao:String(data.get('descricao')||'').trim()||null,tipo,url_externa:url,criado_por:session.user.id});if(error){feedback.innerHTML=`<div class="error-box">${safe(error.message)}</div>`;return}await openMedia('<div class="success">Link publicado com sucesso.</div>')};
+    document.querySelector('#mediaLinkForm').onsubmit=async event=>{event.preventDefault();const data=new FormData(event.currentTarget),feedback=document.querySelector('#mediaFeedback'),url=String(data.get('url')).trim(),cover=String(data.get('capa_url')||'').trim(),tipo=String(data.get('tipo'));if(!/^https:\/\//i.test(url)||cover&&!/^https:\/\//i.test(cover)){feedback.innerHTML='<div class="error-box">Informe links válidos iniciados por https://</div>';return}const {error}=await client.from('midia_arquivos').insert({nome:String(data.get('nome')).trim(),descricao:String(data.get('descricao')||'').trim()||null,tipo,url_externa:url,capa_url:cover||null,criado_por:session.user.id});if(error){feedback.innerHTML=`<div class="error-box">${safe(error.message)}</div>`;return}await openMedia('<div class="success">Link publicado com sucesso.</div>')};
   }
   function openUpload(){
     if(!manager)return;
