@@ -12,7 +12,7 @@ alter table public.departamento_lideres enable row level security;
 create or replace function public.gerencia_departamento(departamento_alvo text)
 returns boolean language sql stable security definer set search_path = public
 as $$
-  select public.tem_perfil(array['pastor','admin','secretaria']::text[])
+  select public.tem_perfil(array['pastor','admin']::text[])
     or exists (
       select 1 from public.departamento_lideres dl
       where dl.usuario_id = auth.uid() and dl.departamento = departamento_alvo
@@ -21,7 +21,7 @@ $$;
 
 drop policy if exists "usuario le propria lideranca" on public.departamento_lideres;
 create policy "usuario le propria lideranca" on public.departamento_lideres
-for select using (usuario_id = auth.uid() or public.tem_perfil(array['pastor','admin','secretaria']::text[]));
+for select using (usuario_id = auth.uid() or public.tem_perfil(array['pastor','admin']::text[]));
 
 drop policy if exists "lider de departamento le pessoas" on public.pessoas;
 create policy "lider de departamento le pessoas" on public.pessoas
