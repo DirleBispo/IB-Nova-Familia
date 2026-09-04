@@ -5,6 +5,7 @@
   const departments=[
     {id:'louvor',nome:'Louvor',descricao:'Equipe de música e adoração'},
     {id:'jovens',nome:'Jovens',descricao:'Ministério de juventude'},
+    {id:'midia',nome:'Mídia',descricao:'Comunicação, fotos, vídeos e transmissões'},
     {id:'recepcao',nome:'Recepção',descricao:'Boas-vindas e acolhimento'},
     {id:'visitas',nome:'Visitas',descricao:'Acompanhamento pastoral'}
   ];
