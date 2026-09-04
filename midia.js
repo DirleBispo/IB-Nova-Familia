@@ -44,7 +44,7 @@
       client.from('midia_equipe_publica').select('id,nome,funcao').order('nome',{ascending:true}),
       client.from('midia_arquivos').select('*').order('criado_em',{ascending:false})
     ]);
-    profile=profileResult.data;manager=!!profile?.ativo&&(['pastor','admin','secretaria'].includes(profile.perfil)||(leaderResult.data||[]).length>0);
+    profile=profileResult.data;manager=!!profile?.ativo&&(['pastor','admin'].includes(profile.perfil)||(leaderResult.data||[]).length>0);
     if(filesResult.error){const setup=filesResult.error.code==='42P01'||/midia_arquivos/i.test(filesResult.error.message||'');window.openPanel('Mídia',`<div class="error-box">${setup?'A área de mídia precisa ser ativada no banco de dados.':safe(filesResult.error.message)}</div>`);return}
     items=filesResult.data||[];
     const cards=await Promise.all(items.map(card));
