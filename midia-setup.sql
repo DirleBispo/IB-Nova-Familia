@@ -24,7 +24,7 @@ as $$select exists(select 1 from public.perfis p where p.id=auth.uid() and p.ati
 
 create or replace function public.ibnf_pode_gerenciar_midia()
 returns boolean language sql stable security definer set search_path=public
-as $$select exists(select 1 from public.perfis p where p.id=auth.uid() and p.ativo=true and p.perfil in ('pastor','admin','secretaria')) or exists(select 1 from public.departamento_lideres d where d.usuario_id=auth.uid() and d.departamento='midia')$$;
+as $$select exists(select 1 from public.perfis p where p.id=auth.uid() and p.ativo=true and p.perfil in ('pastor','admin')) or exists(select 1 from public.departamento_lideres d where d.usuario_id=auth.uid() and d.departamento='midia')$$;
 
 grant execute on function public.ibnf_usuario_ativo() to authenticated;
 grant execute on function public.ibnf_pode_gerenciar_midia() to authenticated;
