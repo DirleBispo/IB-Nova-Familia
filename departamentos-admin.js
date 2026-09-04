@@ -14,7 +14,7 @@
   let managedDepartments=new Set();
   const safe=value=>String(value||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
   const profile=()=>window.IBNF_ACCESS?.getProfile?.();
-  const isAdministration=()=>!!profile()?.ativo&&['pastor','admin','secretaria'].includes(profile()?.perfil);
+  const isAdministration=()=>!!profile()?.ativo&&['pastor','admin'].includes(profile()?.perfil);
   const canManage=departmentId=>isAdministration()||managedDepartments.has(departmentId);
   const department=id=>departments.find(item=>item.id===id);
 
