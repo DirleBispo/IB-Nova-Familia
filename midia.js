@@ -15,7 +15,7 @@
   }
   function memberRows(rows){
     if(!rows.length)return '<div class="media-empty">A equipe de mídia ainda não possui integrantes cadastrados.</div>';
-    return rows.map(row=>{const name=row.pessoas?.nome||'Integrante';return `<div class="media-person"><span class="media-person-avatar">${safe(name.split(/\s+/).slice(0,2).map(part=>part[0]).join('').toUpperCase())}</span><span><strong>${safe(name)}</strong><small>${safe(row.funcao||'Equipe de mídia')}</small></span></div>`}).join('');
+    return rows.map(row=>{const name=row.nome||row.pessoas?.nome||'Integrante';return `<div class="media-person"><span class="media-person-avatar">${safe(name.split(/\s+/).slice(0,2).map(part=>part[0]).join('').toUpperCase())}</span><span><strong>${safe(name)}</strong><small>${safe(row.funcao||'Equipe de mídia')}</small></span></div>`}).join('');
   }
   async function card(item){
     let url=item.url_externa||'';
@@ -26,18 +26,17 @@
   async function openMedia(message=''){
     window.openPanel('Mídia','<div class="members-loading">Carregando espaço da mídia...</div>');
     const auth=await client.auth.getSession();session=auth.data.session;
-    if(!session){window.openPanel('Mídia','<div class="setup-notice"><b>Área para membros</b><span>Entre em Meu acesso para visualizar os arquivos e a equipe de mídia.</span></div>');return}
     const [profileResult,leaderResult,teamResult,filesResult]=await Promise.all([
-      client.from('perfis').select('perfil,ativo').eq('id',session.user.id).maybeSingle(),
-      client.from('departamento_lideres').select('departamento').eq('usuario_id',session.user.id).eq('departamento','midia'),
-      client.from('departamento_equipes').select('id,funcao,pessoas(nome)').eq('departamento','midia').order('criado_em',{ascending:true}),
+      session?client.from('perfis').select('perfil,ativo').eq('id',session.user.id).maybeSingle():Promise.resolve({data:null}),
+      session?client.from('departamento_lideres').select('departamento').eq('usuario_id',session.user.id).eq('departamento','midia'):Promise.resolve({data:[]}),
+      client.from('midia_equipe_publica').select('id,nome,funcao').order('nome',{ascending:true}),
       client.from('midia_arquivos').select('*').order('criado_em',{ascending:false})
     ]);
     profile=profileResult.data;manager=!!profile?.ativo&&(['pastor','admin','secretaria'].includes(profile.perfil)||(leaderResult.data||[]).length>0);
     if(filesResult.error){const setup=filesResult.error.code==='42P01'||/midia_arquivos/i.test(filesResult.error.message||'');window.openPanel('Mídia',`<div class="error-box">${setup?'A área de mídia precisa ser ativada no banco de dados.':safe(filesResult.error.message)}</div>`);return}
     items=filesResult.data||[];
     const cards=await Promise.all(items.map(card));
-    window.openPanel('Mídia',`${message}<div class="social-intro"><span class="section-kicker">Comunicação</span><h3>Equipe de Mídia</h3><p>Fotos, documentos e vídeos da comunicação da IB Nova Família. Os arquivos ficam no Google Drive da igreja.</p></div><div class="media-section-head"><h3>Integrantes</h3>${manager?'<button class="secondary-action" id="mediaManageTeam">Gerenciar equipe</button>':''}</div><div class="media-team">${memberRows(teamResult.data||[])}</div><div class="media-section-head"><h3>Arquivos</h3></div>${manager?'<div class="media-toolbar"><button class="primary" id="mediaAddLink">+ Adicionar link do Drive</button></div>':''}<div class="media-grid">${cards.join('')||'<div class="media-empty">Nenhum arquivo publicado ainda.</div>'}</div>`);
+    window.openPanel('Mídia',`${message}<div class="social-intro"><span class="section-kicker">Comunicação</span><h3>Equipe de Mídia</h3><p>Fotos, documentos e vídeos da comunicação da IB Nova Família. Esta área é pública; para administrar, entre em Meu acesso.</p></div><div class="media-section-head"><h3>Integrantes</h3>${manager?'<button class="secondary-action" id="mediaManageTeam">Gerenciar equipe</button>':''}</div><div class="media-team">${memberRows(teamResult.data||[])}</div><div class="media-section-head"><h3>Arquivos</h3></div>${manager?'<div class="media-toolbar"><button class="primary" id="mediaAddLink">+ Adicionar link do Drive</button></div>':''}<div class="media-grid">${cards.join('')||'<div class="media-empty">Nenhum arquivo publicado ainda.</div>'}</div>`);
     document.querySelector('#mediaManageTeam')?.addEventListener('click',()=>window.showView('departamentos'));
     document.querySelector('#mediaAddLink')?.addEventListener('click',openLink);
     document.querySelectorAll('[data-media-delete]').forEach(button=>button.addEventListener('click',()=>removeItem(button.dataset.mediaDelete,button.dataset.mediaPath)));
