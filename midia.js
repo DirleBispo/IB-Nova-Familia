@@ -7,6 +7,12 @@
 
   function icon(type){return type==='foto'?'▧':type==='documento'?'▤':'▶'}
   function title(type){return type==='foto'?'Foto':type==='documento'?'Documento':'Vídeo'}
+  function previewUrl(url){
+    const value=String(url||'');
+    const drive=value.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([-\w]+)/i)||value.match(/[?&]id=([-\w]+)/i);
+    if(drive)return `https://drive.google.com/thumbnail?id=${encodeURIComponent(drive[1])}&sz=w1200`;
+    return value;
+  }
   function memberRows(rows){
     if(!rows.length)return '<div class="media-empty">A equipe de mídia ainda não possui integrantes cadastrados.</div>';
     return rows.map(row=>{const name=row.pessoas?.nome||'Integrante';return `<div class="media-person"><span class="media-person-avatar">${safe(name.split(/\s+/).slice(0,2).map(part=>part[0]).join('').toUpperCase())}</span><span><strong>${safe(name)}</strong><small>${safe(row.funcao||'Equipe de mídia')}</small></span></div>`}).join('');
@@ -14,7 +20,7 @@
   async function card(item){
     let url=item.url_externa||'';
     if(item.arquivo_path){const {data}=await client.storage.from('midia').createSignedUrl(item.arquivo_path,3600);url=data?.signedUrl||''}
-    const preview=item.tipo==='foto'&&url?`<img src="${safe(url)}" alt="${safe(item.nome)}" loading="lazy">`:icon(item.tipo);
+    const preview=item.tipo==='foto'&&url?`<img src="${safe(previewUrl(url))}" alt="${safe(item.nome)}" loading="lazy">`:icon(item.tipo);
     return `<article class="media-card"><div class="media-preview">${preview}</div><div class="media-card-body"><span class="section-kicker">${title(item.tipo)}</span><h4>${safe(item.nome)}</h4><p>${safe(item.descricao||'Arquivo da equipe de mídia')}</p><div class="media-actions">${url?`<a href="${safe(url)}" target="_blank" rel="noopener">${item.tipo==='video_link'?'Assistir':'Abrir'}</a>`:''}${manager?`<button type="button" class="danger" data-media-delete="${safe(item.id)}" data-media-path="${safe(item.arquivo_path||'')}">Excluir</button>`:''}</div></div></article>`;
   }
   async function openMedia(message=''){
@@ -31,11 +37,16 @@
     if(filesResult.error){const setup=filesResult.error.code==='42P01'||/midia_arquivos/i.test(filesResult.error.message||'');window.openPanel('Mídia',`<div class="error-box">${setup?'A área de mídia precisa ser ativada no banco de dados.':safe(filesResult.error.message)}</div>`);return}
     items=filesResult.data||[];
     const cards=await Promise.all(items.map(card));
-    window.openPanel('Mídia',`${message}<div class="social-intro"><span class="section-kicker">Comunicação</span><h3>Equipe de Mídia</h3><p>Fotos, documentos e vídeos da comunicação da IB Nova Família.</p></div><div class="media-section-head"><h3>Integrantes</h3>${manager?'<button class="secondary-action" id="mediaManageTeam">Gerenciar equipe</button>':''}</div><div class="media-team">${memberRows(teamResult.data||[])}</div><div class="media-section-head"><h3>Arquivos</h3></div>${manager?'<div class="media-toolbar"><button class="primary" id="mediaUploadFile">+ Adicionar foto ou PDF</button><button class="secondary-action" id="mediaAddVideo">+ Adicionar vídeo por link</button></div>':''}<div class="media-grid">${cards.join('')||'<div class="media-empty">Nenhum arquivo publicado ainda.</div>'}</div>`);
+    window.openPanel('Mídia',`${message}<div class="social-intro"><span class="section-kicker">Comunicação</span><h3>Equipe de Mídia</h3><p>Fotos, documentos e vídeos da comunicação da IB Nova Família. Os arquivos ficam no Google Drive da igreja.</p></div><div class="media-section-head"><h3>Integrantes</h3>${manager?'<button class="secondary-action" id="mediaManageTeam">Gerenciar equipe</button>':''}</div><div class="media-team">${memberRows(teamResult.data||[])}</div><div class="media-section-head"><h3>Arquivos</h3></div>${manager?'<div class="media-toolbar"><button class="primary" id="mediaAddLink">+ Adicionar link do Drive</button></div>':''}<div class="media-grid">${cards.join('')||'<div class="media-empty">Nenhum arquivo publicado ainda.</div>'}</div>`);
     document.querySelector('#mediaManageTeam')?.addEventListener('click',()=>window.showView('departamentos'));
-    document.querySelector('#mediaUploadFile')?.addEventListener('click',openUpload);
-    document.querySelector('#mediaAddVideo')?.addEventListener('click',openVideo);
+    document.querySelector('#mediaAddLink')?.addEventListener('click',openLink);
     document.querySelectorAll('[data-media-delete]').forEach(button=>button.addEventListener('click',()=>removeItem(button.dataset.mediaDelete,button.dataset.mediaPath)));
+  }
+  function openLink(){
+    if(!manager)return;
+    window.openPanel('Adicionar arquivo por link',`<form class="media-form" id="mediaLinkForm"><label>Tipo<select name="tipo" required><option value="foto">Foto</option><option value="documento">Documento ou PDF</option><option value="video_link">Vídeo</option></select></label><label>Título<input name="nome" maxlength="100" required placeholder="Ex.: Culto da Família"></label><label>Descrição<textarea name="descricao" maxlength="300" placeholder="Data ou informações sobre o arquivo"></textarea></label><label>Link público do Google Drive<input name="url" type="url" required placeholder="https://drive.google.com/..."></label><div class="media-limit">No Google Drive, deixe o arquivo como “Qualquer pessoa com o link — Leitor”. Nada será armazenado na plataforma.</div><button class="primary">Publicar link</button><button type="button" class="secondary-action" id="mediaCancel">Cancelar</button><div id="mediaFeedback"></div></form>`);
+    document.querySelector('#mediaCancel').onclick=()=>openMedia();
+    document.querySelector('#mediaLinkForm').onsubmit=async event=>{event.preventDefault();const data=new FormData(event.currentTarget),feedback=document.querySelector('#mediaFeedback'),url=String(data.get('url')).trim(),tipo=String(data.get('tipo'));if(!/^https:\/\//i.test(url)){feedback.innerHTML='<div class="error-box">Informe um link válido iniciado por https://</div>';return}const {error}=await client.from('midia_arquivos').insert({nome:String(data.get('nome')).trim(),descricao:String(data.get('descricao')||'').trim()||null,tipo,url_externa:url,criado_por:session.user.id});if(error){feedback.innerHTML=`<div class="error-box">${safe(error.message)}</div>`;return}await openMedia('<div class="success">Link publicado com sucesso.</div>')};
   }
   function openUpload(){
     if(!manager)return;

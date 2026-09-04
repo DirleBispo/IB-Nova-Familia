@@ -10,7 +10,7 @@
       <button class="menu-action" onclick="showView('perfil')"><b>Minha conta</b><small>Login, perfil e acesso ao sistema.</small><span>›</span></button>
       <button class="menu-action" onclick="showView('redes')"><b>Redes Sociais</b><small>Instagram, Facebook e WhatsApp oficiais da igreja.</small><span>›</span></button>
       <button class="menu-action" onclick="showView('agenda')"><b>Agenda</b><small>Veja a programação e os próximos cultos.</small><span>›</span></button>
-      <button class="menu-action" onclick="showView('midia')"><b>Mídia</b><small>Equipe, fotos, documentos e links de vídeos.</small><span>›</span></button>
+      <button class="menu-action" onclick="showView('midia')"><b>Mídia</b><small>Equipe e arquivos compartilhados pelo Google Drive.</small><span>›</span></button>
       <button class="menu-action" onclick="showView('notificacoes')"><b>Avisos</b><small>Comunicados oficiais da igreja.</small><span>›</span></button>
     </div>`);
     scrollPanel();
