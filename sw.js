@@ -1,4 +1,4 @@
-const CACHE='ibnf-v27';
+const CACHE='ibnf-v28';
 const ASSETS=[
   './',
   './index.html',
@@ -35,6 +35,7 @@ const ASSETS=[
   './app-history.js',
   './pastoral-dashboard.css',
   './pastoral-dashboard.js',
+  './device-lock.js',
   './access-control.js',
   './pastoral-home.css',
   './pastoral-home.js',
