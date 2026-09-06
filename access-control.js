@@ -52,6 +52,13 @@
       if(!session)return previousShowView('perfil');
       return;
     }
+    if(restrictedViews.has(view)&&window.IBNF_DEVICE_LOCK?.require){
+      const requestedView=view;
+      window.IBNF_DEVICE_LOCK.require(session.user).then(unlocked=>{
+        if(unlocked)previousShowView(requestedView);
+      });
+      return;
+    }
     return previousShowView(view);
   };
 
