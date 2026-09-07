@@ -65,4 +65,30 @@ document.addEventListener('click',event=>{
   if(typeof navigate==='function')navigate(trigger.dataset.view);
 });
 let deferredPrompt;const installBtn=document.querySelector('#installBtn');window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;installBtn.hidden=false});installBtn.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;installBtn.hidden=true});if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'))}
+function abrirNovaSenha(){
+  openPanel('Criar nova senha',`<div class="login-shell"><div class="login-brand"><span class="section-kicker">Recuperação de acesso</span><h3>Crie sua nova senha</h3><p>Digite e confirme a senha que será usada nos próximos acessos.</p></div><form class="login-form" id="newPasswordForm"><label>Nova senha<input name="senha" type="password" minlength="6" autocomplete="new-password" required></label><label>Confirme a nova senha<input name="confirmar" type="password" minlength="6" autocomplete="new-password" required></label><button class="primary">Salvar nova senha</button></form><div id="newPasswordFeedback"></div></div>`);
+  const form=document.querySelector('#newPasswordForm');
+  if(!form)return;
+  form.onsubmit=async event=>{
+    event.preventDefault();
+    const feedback=document.querySelector('#newPasswordFeedback');
+    const data=new FormData(form);
+    const senha=String(data.get('senha')||'');
+    const confirmar=String(data.get('confirmar')||'');
+    if(senha!==confirmar){feedback.innerHTML='<div class="error-box">As senhas não conferem.</div>';return}
+    const button=form.querySelector('button');
+    button.disabled=true;button.textContent='Salvando...';
+    const {error}=await supa.auth.updateUser({password:senha});
+    button.disabled=false;button.textContent='Salvar nova senha';
+    if(error){feedback.innerHTML=`<div class="error-box">${esc(error.message)}</div>`;return}
+    feedback.innerHTML='<div class="success"><b>Senha alterada com sucesso.</b><br>Agora você já pode usar esta nova senha nos próximos acessos.</div>';
+    form.reset();
+    setTimeout(()=>showView('perfil'),1500);
+  };
+}
+if(supa){
+  supa.auth.onAuthStateChange((event)=>{
+    if(event==='PASSWORD_RECOVERY')setTimeout(abrirNovaSenha,100);
+  });
+}
 renderEvents();loadSession();
