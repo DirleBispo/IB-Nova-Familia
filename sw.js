@@ -1,4 +1,4 @@
-const CACHE='ibnf-v31';
+const CACHE='ibnf-v32';
 const ASSETS=[
   './',
   './index.html',
