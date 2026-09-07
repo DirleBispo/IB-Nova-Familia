@@ -2,7 +2,7 @@
   if(!window.supabase||!window.IBNF_CONFIG?.SUPABASE_URL||!window.IBNF_CONFIG?.SUPABASE_ANON_KEY)return;
   const client=window.supabase.createClient(window.IBNF_CONFIG.SUPABASE_URL,window.IBNF_CONFIG.SUPABASE_ANON_KEY);
   const restrictedViews=new Set(['pastoral','pessoas','financeiro','acessos','avisos-admin','push-notifications','secretaria']);
-  let session=null,profile=null,refreshing=false;
+  let session=null,profile=null,refreshing=false,refreshAgain=false;
 
   function defaults(perfil){
     if(perfil==='admin'||perfil==='pastor')return {pastoral:true,pessoas:true,financeiro:true,acessos:true,avisos:true,secretaria:true};
@@ -27,7 +27,10 @@
   }
 
   async function refreshAuth(){
-    if(refreshing)return;
+    if(refreshing){
+      refreshAgain=true;
+      return;
+    }
     refreshing=true;
     try{
       const {data}=await client.auth.getSession();
@@ -39,6 +42,10 @@
       applyVisibility();
     }finally{
       refreshing=false;
+      if(refreshAgain){
+        refreshAgain=false;
+        setTimeout(refreshAuth,0);
+      }
     }
   }
 
@@ -62,7 +69,10 @@
     return previousShowView(view);
   };
 
-  client.auth.onAuthStateChange(()=>setTimeout(refreshAuth,50));
+  client.auth.onAuthStateChange(()=>{
+    setTimeout(refreshAuth,50);
+    setTimeout(refreshAuth,400);
+  });
   window.addEventListener('focus',refreshAuth);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshAuth()});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refreshAuth);else refreshAuth();
