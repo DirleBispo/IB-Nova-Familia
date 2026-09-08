@@ -1,4 +1,4 @@
-const CACHE='ibnf-v36';
+const CACHE='ibnf-v37';
 const ASSETS=[
   './',
   './index.html',
@@ -51,6 +51,7 @@ const ASSETS=[
   './home-organizada.js',
   './campaign.css',
   './evento-destaque.css',
+  './event-art-click.css',
   './evento-destaque.js',
   './quem-somos.css',
   './quem-somos.js',
