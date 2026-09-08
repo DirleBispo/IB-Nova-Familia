@@ -6,6 +6,10 @@
   const shortDays=['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
   const escapeHtml=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
   let rules=[];
+  const agendaUrl=()=>`${window.location.origin}${window.location.pathname}#agenda`;
+  async function shareContent(title,text){const payload={title,text,url:agendaUrl()};if(navigator.share){try{await navigator.share(payload);return}catch(error){if(error?.name==='AbortError')return}}try{await navigator.clipboard.writeText(`${text}\n\n${agendaUrl()}`);alert('Mensagem e link da plataforma copiados. Agora é só colar no WhatsApp ou nas redes sociais.')}catch(_){window.prompt('Copie este link para compartilhar:',agendaUrl())}}
+  const shareAgenda=()=>shareContent('Agenda — IB Nova Família','Confira os próximos cultos e eventos da Igreja Batista Nova Família. Acompanhe nossa programação pela plataforma oficial:');
+  const shareEvent=event=>{const date=event.when.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});return shareContent(event.titulo,`Você é nosso convidado! ${event.titulo} — ${date} às ${event.hora}${event.local?` — ${event.local}`:''}. Veja este e outros eventos da IB Nova Família:`)};
 
   async function managerAccess(){
     const {data:{session}}=await sb.auth.getSession();
@@ -39,7 +43,7 @@
 
   function publicCard(event,index){
     const date=event.when;
-    return `<article class="agenda-event ${index===0?'event-featured':''}"><div class="agenda-event-date"><span>${shortDays[date.getDay()]}</span><b>${String(date.getDate()).padStart(2,'0')}</b><small>${months[date.getMonth()]}</small></div><div class="agenda-event-copy"><small>${index===0?'PRÓXIMO EVENTO':'PROGRAMAÇÃO'}</small><b>${escapeHtml(event.titulo)}</b><span>🕒 ${escapeHtml(event.hora)}${event.local?` · 📍 ${escapeHtml(event.local)}`:''}</span>${event.descricao?`<small>${escapeHtml(event.descricao)}</small>`:''}</div><span class="agenda-event-arrow">›</span></article>`;
+    return `<article class="agenda-event ${index===0?'event-featured':''}"><div class="agenda-event-date"><span>${shortDays[date.getDay()]}</span><b>${String(date.getDate()).padStart(2,'0')}</b><small>${months[date.getMonth()]}</small></div><div class="agenda-event-copy"><small>${index===0?'PRÓXIMO EVENTO':'PROGRAMAÇÃO'}</small><b>${escapeHtml(event.titulo)}</b><span>🕒 ${escapeHtml(event.hora)}${event.local?` · 📍 ${escapeHtml(event.local)}`:''}</span>${event.descricao?`<small>${escapeHtml(event.descricao)}</small>`:''}</div><button type="button" class="agenda-share-event" data-share-event="${index}" aria-label="Compartilhar ${escapeHtml(event.titulo)}">Compartilhar</button></article>`;
   }
 
   function ruleLabel(rule){return rule.tipo==='recorrente'?`${weekdays[Number(rule.dia_semana)]}, toda semana`:`${String(rule.data_evento||'').split('-').reverse().join('/')}`}
@@ -47,7 +51,7 @@
 
   function agendaMarkup(access,feedback=''){
     const events=expandRules(rules);
-    return `<div class="agenda-toolbar"><div><span class="section-kicker">Programação</span><h3>Próximos eventos</h3></div>${access.allowed?'<div class="agenda-form-actions"><button class="secondary-action" type="button" id="editFeaturedEvent">Editar destaque da página inicial</button><button class="primary" type="button" id="newAgendaEvent">+ Criar evento</button></div>':''}</div><div id="agendaFeedback">${feedback}</div><div class="agenda-public-list">${events.length?events.map(publicCard).join(''):'<div class="empty"><div>Nenhum evento programado.</div></div>'}</div>${access.allowed?`<section class="agenda-manage"><span class="section-kicker">Administração</span><h3>Gerenciar agenda</h3><p>Edite ou exclua eventos únicos e programações semanais.</p>${rules.map(ruleCard).join('')||'<div class="empty"><div>Nenhuma programação cadastrada.</div></div>'}</section>`:''}`;
+    return `<div class="agenda-toolbar"><div><span class="section-kicker">Programação</span><h3>Próximos eventos</h3></div><div class="agenda-form-actions"><button class="agenda-share-all" type="button" id="shareAllEvents">Compartilhar eventos</button>${access.allowed?'<button class="secondary-action" type="button" id="editFeaturedEvent">Editar destaque</button><button class="primary" type="button" id="newAgendaEvent">+ Criar evento</button>':''}</div></div><div id="agendaFeedback">${feedback}</div><div class="agenda-public-list">${events.length?events.map(publicCard).join(''):'<div class="empty"><div>Nenhum evento programado.</div></div>'}</div>${access.allowed?`<section class="agenda-manage"><span class="section-kicker">Administração</span><h3>Gerenciar agenda</h3><p>Edite ou exclua eventos únicos e programações semanais.</p>${rules.map(ruleCard).join('')||'<div class="empty"><div>Nenhuma programação cadastrada.</div></div>'}</section>`:''}`;
   }
 
   function formMarkup(rule){
@@ -65,6 +69,9 @@
     const access=await managerAccess();
     try{await loadRules()}catch(error){window.openPanel('Agenda',`<div class="error-box">A agenda precisa ser ativada no banco de dados. ${escapeHtml(error.message)}</div>`);return}
     window.openPanel('Agenda',agendaMarkup(access,feedback));
+    const events=expandRules(rules);
+    document.querySelector('#shareAllEvents')?.addEventListener('click',shareAgenda);
+    document.querySelectorAll('[data-share-event]').forEach(button=>button.addEventListener('click',()=>shareEvent(events[Number(button.dataset.shareEvent)])));
     document.querySelector('#editFeaturedEvent')?.addEventListener('click',()=>window.ibnfOpenFeaturedEvent?.());
     document.querySelector('#newAgendaEvent')?.addEventListener('click',()=>openAgendaForm(null,access));
     document.querySelectorAll('[data-agenda-edit]').forEach(button=>button.addEventListener('click',()=>openAgendaForm(rules.find(item=>item.id===button.dataset.agendaEdit),access)));
@@ -103,4 +110,5 @@
   const previousShowView=window.showView;
   window.showView=function(view){if(view==='agenda'){openAgenda();return}const result=previousShowView(view);if(view==='inicio')setTimeout(refreshHome,50);return result};
   refreshHome();
+  if(window.location.hash==='#agenda')setTimeout(()=>window.showView('agenda'),100);
 })();

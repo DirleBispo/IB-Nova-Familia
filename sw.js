@@ -1,4 +1,4 @@
-const CACHE='ibnf-v35';
+const CACHE='ibnf-v36';
 const ASSETS=[
   './',
   './index.html',
@@ -23,6 +23,7 @@ const ASSETS=[
   './avisos-admin.css',
   './avisos-admin.js',
   './agenda-admin.css',
+  './agenda-share.css',
   './agenda-admin.js',
   './estudos-admin.css',
   './estudos-admin.js',
