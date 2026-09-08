@@ -30,6 +30,7 @@
 <link rel="stylesheet" href="menu-functional.css">
 <link rel="stylesheet" href="home-organizada.css">
 <link rel="stylesheet" href="campaign.css">
+<link rel="stylesheet" href="evento-destaque.css">
 <link rel="stylesheet" href="quem-somos.css">
 <link rel="stylesheet" href="visual-polish.css">
 </head>
@@ -88,13 +89,15 @@
 </div>
 <button class="outline-action" data-view="menu">Menu completo</button>
 </section>
-<section id="homeCampaign" class="campaign-callout" data-duration="24h" aria-labelledby="homeCampaignTitle">
+<section id="homeCampaign" class="campaign-callout" data-duration="24h" data-dynamic-event="true" aria-labelledby="homeCampaignTitle">
+<div id="homeCampaignImage" class="campaign-image" hidden></div>
 <div class="campaign-copy">
 <span class="campaign-label">Campanha especial</span>
 <h2 id="homeCampaignTitle">24 Horas de Oração</h2>
 <p id="homeCampaignPeriod">De 04/09 às 23h até 05/09 às 23h. Escolha uma hora e participe conosco.</p>
 </div>
 <a class="campaign-action" href="oracao.html">Quero participar</a>
+<button id="homeCampaignEdit" class="campaign-edit" type="button" hidden>Editar destaque</button>
 </section>
 <section class="quick-grid" aria-label="Acessos rápidos">
 <button class="quick-card" data-view="agenda">
@@ -416,6 +419,8 @@
 </script>
 <script src="home-organizada.js">
 </script>
+<script src="evento-destaque.js">
+</script>
 <script src="avisos-admin.js">
 </script>
 <script src="agenda-admin.js">
@@ -436,7 +441,6 @@
 </script>
 <script src="app-history.js">
 </script>
-  <script src="finance-access-fix.js"></script>
   <script src="finance-access-fix.js"></script>
 </body>
 </html>

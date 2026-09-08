@@ -47,7 +47,7 @@
 
   function agendaMarkup(access,feedback=''){
     const events=expandRules(rules);
-    return `<div class="agenda-toolbar"><div><span class="section-kicker">Programação</span><h3>Próximos eventos</h3></div>${access.allowed?'<button class="primary" type="button" id="newAgendaEvent">+ Criar evento</button>':''}</div><div id="agendaFeedback">${feedback}</div><div class="agenda-public-list">${events.length?events.map(publicCard).join(''):'<div class="empty"><div>Nenhum evento programado.</div></div>'}</div>${access.allowed?`<section class="agenda-manage"><span class="section-kicker">Administração</span><h3>Gerenciar agenda</h3><p>Edite ou exclua eventos únicos e programações semanais.</p>${rules.map(ruleCard).join('')||'<div class="empty"><div>Nenhuma programação cadastrada.</div></div>'}</section>`:''}`;
+    return `<div class="agenda-toolbar"><div><span class="section-kicker">Programação</span><h3>Próximos eventos</h3></div>${access.allowed?'<div class="agenda-form-actions"><button class="secondary-action" type="button" id="editFeaturedEvent">Editar destaque da página inicial</button><button class="primary" type="button" id="newAgendaEvent">+ Criar evento</button></div>':''}</div><div id="agendaFeedback">${feedback}</div><div class="agenda-public-list">${events.length?events.map(publicCard).join(''):'<div class="empty"><div>Nenhum evento programado.</div></div>'}</div>${access.allowed?`<section class="agenda-manage"><span class="section-kicker">Administração</span><h3>Gerenciar agenda</h3><p>Edite ou exclua eventos únicos e programações semanais.</p>${rules.map(ruleCard).join('')||'<div class="empty"><div>Nenhuma programação cadastrada.</div></div>'}</section>`:''}`;
   }
 
   function formMarkup(rule){
@@ -65,6 +65,7 @@
     const access=await managerAccess();
     try{await loadRules()}catch(error){window.openPanel('Agenda',`<div class="error-box">A agenda precisa ser ativada no banco de dados. ${escapeHtml(error.message)}</div>`);return}
     window.openPanel('Agenda',agendaMarkup(access,feedback));
+    document.querySelector('#editFeaturedEvent')?.addEventListener('click',()=>window.ibnfOpenFeaturedEvent?.());
     document.querySelector('#newAgendaEvent')?.addEventListener('click',()=>openAgendaForm(null,access));
     document.querySelectorAll('[data-agenda-edit]').forEach(button=>button.addEventListener('click',()=>openAgendaForm(rules.find(item=>item.id===button.dataset.agendaEdit),access)));
     document.querySelectorAll('[data-agenda-delete]').forEach(button=>button.addEventListener('click',async()=>{

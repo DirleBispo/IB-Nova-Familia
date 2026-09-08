@@ -80,6 +80,7 @@
 
   if (
     !campaignSection ||
+    campaignSection.dataset.dynamicEvent === 'true' ||
     !campaignTitle ||
     !campaignPeriod ||
     !window.supabase ||
