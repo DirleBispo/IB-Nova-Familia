@@ -25,18 +25,6 @@ create policy "evento destaque administradores editam" on public.evento_destaque
 grant select on public.evento_destaque to anon, authenticated;
 grant insert, update on public.evento_destaque to authenticated;
 
-insert into storage.buckets (id,name,public,file_size_limit,allowed_mime_types)
-values ('eventos','eventos',true,5242880,array['image/jpeg','image/png','image/webp'])
-on conflict (id) do update set public=true,file_size_limit=5242880,
-  allowed_mime_types=array['image/jpeg','image/png','image/webp'];
-drop policy if exists "fotos de eventos leitura publica" on storage.objects;
-create policy "fotos de eventos leitura publica" on storage.objects for select to public using (bucket_id='eventos');
-drop policy if exists "fotos de eventos administradores enviam" on storage.objects;
-create policy "fotos de eventos administradores enviam" on storage.objects for insert to authenticated with check (
-  bucket_id='eventos' and exists(select 1 from public.perfis p where p.id=auth.uid() and p.ativo=true and
-    (p.perfil in ('pastor','admin','secretaria') or coalesce((p.permissoes->>'agenda')::boolean,false)))
-);
-
 insert into public.evento_destaque (id,etiqueta,titulo,descricao,texto_botao,link_url,ativo)
 values (1,'Campanha especial','24 Horas de Oração','Escolha uma hora e participe conosco.','Quero participar','https://ibnovafamilia.com.br/oracao.html',true)
 on conflict (id) do nothing;
