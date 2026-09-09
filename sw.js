@@ -1,4 +1,4 @@
-const CACHE='ibnf-v38';
+const CACHE='ibnf-v40';
 const ASSETS=[
   './',
   './index.html',
@@ -58,6 +58,10 @@ const ASSETS=[
   './quem-somos.js',
   './Biografia_Igreja_Batista_Nova_Familia_Atualizada.pdf',
   './visual-polish.css',
+  './estatisticas.css',
+  './estatisticas.js',
+  './versiculo-diario.css',
+  './versiculo-diario.js',
   './oracao.html',
   './oracao.css',
   './oracao.js',

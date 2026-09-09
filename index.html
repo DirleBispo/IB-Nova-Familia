@@ -36,6 +36,8 @@
 <link rel="stylesheet" href="event-multi.css">
 <link rel="stylesheet" href="quem-somos.css">
 <link rel="stylesheet" href="visual-polish.css">
+<link rel="stylesheet" href="estatisticas.css">
+<link rel="stylesheet" href="versiculo-diario.css">
 </head>
 <body>
 <header class="app-header">
@@ -91,6 +93,15 @@
 <p>As funções mais usadas ficam logo aqui.</p>
 </div>
 <button class="outline-action" data-view="menu">Menu completo</button>
+</section>
+<section class="daily-word" aria-labelledby="dailyWordTitle">
+<div class="daily-word-mark" aria-hidden="true">“</div>
+<div class="daily-word-copy">
+<span class="section-kicker">Palavra para hoje</span>
+<blockquote id="dailyWordText">Carregando o versículo do dia...</blockquote>
+<strong id="dailyWordReference"></strong>
+</div>
+<button id="shareDailyWord" class="daily-word-share" type="button">Compartilhar versículo</button>
 </section>
 <section class="featured-events-area" aria-labelledby="featuredEventsTitle">
 <div class="featured-events-heading"><div><span class="section-kicker">Fique por dentro</span><h2 id="featuredEventsTitle">Próximos eventos</h2></div><button id="addFeaturedEventHome" class="outline-action" type="button" hidden>+ Adicionar evento</button></div>
@@ -233,6 +244,7 @@
 </span>
 <span class="chevron">›</span>
 </button>
+<button class="module-card" data-view="estatisticas" hidden aria-hidden="true"><span class="icon-wrap">↗</span><span class="module-copy"><strong>Estatísticas</strong><small>Visitantes e páginas acessadas</small></span><span class="chevron">›</span></button>
 </div>
 </section>
 
@@ -438,6 +450,8 @@
 </script>
 <script src="app-history.js">
 </script>
+<script src="estatisticas.js"></script>
+<script src="versiculo-diario.js"></script>
   <script src="finance-access-fix.js"></script>
 </body>
 </html>

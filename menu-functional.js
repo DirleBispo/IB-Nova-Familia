@@ -5,9 +5,11 @@
     if(typeof window.openPanel!=='function')return;
     window.setNav?.('menu');
     const noticesAdmin=window.IBNF_ACCESS?.can?.('avisos-admin')?`<button class="menu-action" onclick="showView('avisos-admin')"><b>Gerenciar avisos</b><small>Crie, edite e publique comunicados para toda a igreja.</small><span>›</span></button>`:'';
+    const statistics=window.IBNF_ACCESS?.can?.('estatisticas')?`<button class="menu-action" onclick="showView('estatisticas')"><b>Estatísticas</b><small>Veja visitantes, acessos e páginas mais procuradas.</small><span>›</span></button>`:'';
     window.openPanel('Menu',`<div class="menu-action-list">
       <button class="menu-action" onclick="showView('quem-somos')"><b>Quem Somos</b><small>Conheça nossa história, missão e liderança pastoral.</small><span>›</span></button>
       ${noticesAdmin}
+      ${statistics}
       <button class="menu-action" onclick="showView('acessos')"><b>Administração</b><small>Usuários, aprovações, permissões e acessos da equipe.</small><span>›</span></button>
       <button class="menu-action" onclick="showView('perfil')"><b>Minha conta</b><small>Login, perfil e acesso ao sistema.</small><span>›</span></button>
       <button class="menu-action" onclick="showView('redes')"><b>Redes Sociais</b><small>Instagram, Facebook e WhatsApp oficiais da igreja.</small><span>›</span></button>
