@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Gestão da Cesta Solidária • IB Nova Família</title>
+<style>
+:root{--g:#163f32;--g2:#245d4b;--bg:#f4f7f5;--card:#fff;--line:#dce7e1;--muted:#68766f;--ink:#17231f;--soft:#eaf4ef;--danger:#9f2d2d;--warn:#8a6116}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer}.top{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:24px 18px}.wrap{max-width:1050px;margin:auto}.brand{font-size:12px;font-weight:700;letter-spacing:.08em;opacity:.85}.top h1{margin:5px 0 3px;font-size:30px}.top p{margin:0;color:#dcebe4}.main{padding:24px 18px 70px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}.login{max-width:460px;margin:30px auto}.form{display:grid;gap:12px}.form label{font-size:13px;font-weight:700}.form input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;margin-top:5px}.btn{border:0;background:var(--g);color:#fff;border-radius:10px;padding:11px 14px;font-weight:700}.btn2{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:11px 14px;font-weight:700}.danger{border:1px solid #e5bcbc;background:#fff;color:var(--danger);border-radius:10px;padding:9px 12px;font-weight:700}.small{font-size:12px;color:var(--muted);line-height:1.45}.hidden{display:none!important}.dashHead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}.dashHead h2{margin:0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}.stat span{font-size:12px;color:var(--muted)}.stat b{display:block;font-size:25px;margin-top:4px}.tools{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tools input,.tools select{padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}.tools input{flex:1;min-width:220px}.list{display:grid;gap:11px}.reserva{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px}.resTop{display:flex;justify-content:space-between;gap:12px}.resTop h3{margin:0 0 4px}.status{font-size:11px;font-weight:700;border-radius:999px;padding:6px 9px;height:max-content;background:var(--soft);color:var(--g)}.status.cancelado{background:#fbeaea;color:var(--danger)}.status.recebido{background:#e8f5ea;color:#236d35}.items{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.item{background:var(--soft);border-radius:9px;padding:7px 9px;font-size:12px}.actions{display:flex;gap:7px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:11px}.actions button{padding:8px 10px}.wa{color:var(--g2);text-decoration:none;font-weight:700}.msg{margin-top:10px}.back{display:inline-block;margin-top:14px;color:#fff;text-decoration:none;font-size:13px}.empty{text-align:center;padding:30px;color:var(--muted)}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.resTop{display:block}.status{display:inline-block;margin-top:8px}.dashHead{align-items:flex-start}.dashHead>div:last-child{display:flex;gap:6px}.top h1{font-size:26px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><div class="brand">IB NOVA FAMÍLIA</div><h1>Gestão da Cesta Solidária</h1><p>Área restrita para organização das doações.</p><a class="back" href="./">← Voltar para a campanha</a></div></header>
+<main class="wrap main">
+<section id="loginBox" class="card login">
+  <h2 style="margin-top:0">Acesso da responsável</h2>
+  <p class="small">Entre com o e-mail autorizado. No primeiro acesso, use “Criar meu acesso” para definir sua própria senha.</p>
+  <div class="form">
+    <label>E-mail<input id="email" type="email" autocomplete="email" placeholder="seuemail@exemplo.com" /></label>
+    <label>Senha<input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="Mínimo 8 caracteres" /></label>
+    <button id="loginBtn" class="btn">Entrar</button>
+    <button id="signupBtn" class="btn2">Criar meu acesso</button>
+    <div id="loginMsg" class="small msg"></div>
+  </div>
+</section>
+
+<section id="dashboard" class="hidden">
+  <div class="dashHead"><div><div class="small">RESPONSÁVEL</div><h2 id="manager">Gestão</h2><div id="campaign" class="small"></div></div><div><button id="refresh" class="btn2">Atualizar</button><button id="logout" class="btn2">Sair</button></div></div>
+  <div class="stats"><div class="stat"><span>Total de reservas</span><b id="sTotal">0</b></div><div class="stat"><span>Reservado</span><b id="sReserved">0</b></div><div class="stat"><span>Recebido</span><b id="sReceived">0</b></div><div class="stat"><span>Cancelado</span><b id="sCancelled">0</b></div></div>
+  <div class="tools"><input id="search" placeholder="Buscar por nome, telefone ou item..." /><select id="filter"><option value="todos">Todos os status</option><option value="reservado">Reservado</option><option value="recebido">Recebido</option><option value="cancelado">Cancelado</option></select></div>
+  <div id="panelMsg" class="small msg"></div>
+  <div id="list" class="list"></div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://zbztlwqtqfnelznxuwuf.supabase.co';
+const SUPABASE_KEY='sb_publishable_45YqRxciTicPqFHnXITk7Q_guUOdR9s';
+const ADMIN_API=SUPABASE_URL+'/functions/v1/cesta-admin-api';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let panel=null;
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function digits(v){return String(v||'').replace(/\D/g,'')}
+function fmtDate(v){try{return new Date(v).toLocaleString('pt-BR')}catch{return ''}}
+async function session(){return (await sb.auth.getSession()).data.session}
+async function admin(action,payload={}){const s=await session();if(!s)throw new Error('Sua sessão terminou. Entre novamente.');const r=await fetch(ADMIN_API,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+s.access_token,'apikey':SUPABASE_KEY},body:JSON.stringify({action,payload})});const t=await r.text();let j={};try{j=JSON.parse(t)}catch{}if(!r.ok||j.error)throw new Error(j.error||'Erro ao acessar a área administrativa.');return j}
+function showLogin(msg=''){$('loginBox').classList.remove('hidden');$('dashboard').classList.add('hidden');$('loginMsg').textContent=msg}
+function showDash(){$('loginBox').classList.add('hidden');$('dashboard').classList.remove('hidden')}
+async function loadPanel(){showDash();$('panelMsg').textContent='Atualizando...';try{panel=await admin('painel');$('manager').textContent=panel.gestor_nome||'Responsável';$('campaign').textContent=panel.campanha?panel.campanha.titulo:'';const rs=panel.reservas||[];$('sTotal').textContent=rs.length;$('sReserved').textContent=rs.filter(x=>x.status==='reservado').length;$('sReceived').textContent=rs.filter(x=>x.status==='recebido').length;$('sCancelled').textContent=rs.filter(x=>x.status==='cancelado').length;$('panelMsg').textContent='';render()}catch(e){if(/não autorizado|unauthorized|jwt/i.test(e.message)){await sb.auth.signOut();showLogin('Este e-mail não possui permissão para gerenciar a Cesta Solidária.')}else $('panelMsg').textContent=e.message}}
+function render(){if(!panel)return;const term=$('search').value.trim().toLowerCase(),f=$('filter').value;const rs=(panel.reservas||[]).filter(r=>{const hay=[r.nome,r.whatsapp,...(r.itens||[]).map(i=>i.nome)].join(' ').toLowerCase();return(f==='todos'||r.status===f)&&(!term||hay.includes(term))});if(!rs.length){$('list').innerHTML='<div class="card empty">Nenhuma reserva encontrada.</div>';return}$('list').innerHTML=rs.map(r=>{const phone=digits(r.whatsapp);const items=(r.itens||[]).map(i=>'<span class="item"><b>'+esc(i.quantidade)+'×</b> '+esc(i.nome)+'</span>').join('');return '<article class="reserva"><div class="resTop"><div><h3>'+esc(r.nome)+'</h3><div class="small">'+fmtDate(r.created_at)+(r.whatsapp?' · '+(phone?'<a class="wa" target="_blank" rel="noopener" href="https://wa.me/55'+phone.replace(/^55/,'')+'">'+esc(r.whatsapp)+'</a>':esc(r.whatsapp)):'')+'</div></div><span class="status '+esc(r.status)+'">'+esc(r.status.toUpperCase())+'</span></div><div class="items">'+(items||'<span class="small">Sem itens</span>')+'</div><div class="actions"><button class="btn2" onclick="setStatus('+r.id+',\'reservado\')">Reservado</button><button class="btn2" onclick="setStatus('+r.id+',\'recebido\')">Marcar recebido</button><button class="danger" onclick="setStatus('+r.id+',\'cancelado\')">Cancelar</button></div></article>'}).join('')}
+async function setStatus(id,status){if(status==='cancelado'&&!confirm('Cancelar esta doação? Os itens voltarão a ficar disponíveis.'))return;$('panelMsg').textContent='Salvando...';try{await admin('status',{reserva_id:id,status});await loadPanel()}catch(e){$('panelMsg').textContent=e.message}}
+window.setStatus=setStatus;
+$('loginBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;$('loginMsg').textContent='Entrando...';const {error}=await sb.auth.signInWithPassword({email,password});if(error){$('loginMsg').textContent='Não foi possível entrar: '+error.message;return}await loadPanel()};
+$('signupBtn').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value;if(password.length<8){$('loginMsg').textContent='A senha precisa ter pelo menos 8 caracteres.';return}$('loginMsg').textContent='Criando acesso...';const {data,error}=await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+'/admin.html'}});if(error){$('loginMsg').textContent='Não foi possível criar o acesso: '+error.message;return}if(data.session){$('loginMsg').textContent='Acesso criado.';await loadPanel()}else $('loginMsg').textContent='Acesso criado. Confirme o e-mail recebido e depois volte aqui para entrar.'};
+$('logout').onclick=async()=>{await sb.auth.signOut();showLogin('Você saiu da área administrativa.')};
+$('refresh').onclick=loadPanel;$('search').oninput=render;$('filter').onchange=render;
+(async()=>{if(await session())await loadPanel();else showLogin()})();
+</script>
+</body>
+</html>
