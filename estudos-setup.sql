@@ -5,6 +5,7 @@ create table if not exists public.estudos (
   autor text,
   resumo text,
   conteudo text not null,
+  materiais jsonb not null default '[]'::jsonb,
   data_estudo date not null default current_date,
   publicado boolean not null default true,
   criado_por uuid references auth.users(id) on delete set null,
