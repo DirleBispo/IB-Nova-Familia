@@ -227,6 +227,476 @@
 <em class="new-badge">Novo</em>
 <span class="chevron">›</span>
 </button>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f55b5">
+<meta name="application-name" content="IB Nova Família">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="IB Nova Família">
+<title>IB Nova Família</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="members-admin.css">
+<link rel="stylesheet" href="birthdays.css">
+<link rel="stylesheet" href="birthday-share.css">
+<link rel="stylesheet" href="community-data.css">
+<link rel="stylesheet" href="avisos-admin.css">
+<link rel="stylesheet" href="agenda-admin.css">
+<link rel="stylesheet" href="agenda-share.css">
+<link rel="stylesheet" href="estudos-admin.css">
+<link rel="stylesheet" href="estudos-materiais.css">
+<link rel="stylesheet" href="departamentos-admin.css">
+<link rel="stylesheet" href="midia.css">
+<link rel="stylesheet" href="secretaria-dashboard.css">
+<link rel="stylesheet" href="pastoral-dashboard.css">
+<link rel="stylesheet" href="pastoral-home.css">
+<link rel="stylesheet" href="financeiro.css">
+<link rel="stylesheet" href="acolhimento.css">
+<link rel="stylesheet" href="menu-functional.css">
+<link rel="stylesheet" href="home-organizada.css">
+<link rel="stylesheet" href="campaign.css">
+<link rel="stylesheet" href="evento-destaque.css">
+<link rel="stylesheet" href="event-art-click.css">
+<link rel="stylesheet" href="event-multi.css">
+<link rel="stylesheet" href="quem-somos.css">
+<link rel="stylesheet" href="visual-polish.css">
+<link rel="stylesheet" href="estatisticas.css">
+<link rel="stylesheet" href="versiculo-diario.css">
+<link rel="stylesheet" href="site-institucional.css">
+</head>
+<body>
+<header class="app-header">
+<div class="header-inner">
+<div class="brand">
+<img class="official-logo" src="photo_5143638454599093943_y.jpg" alt="Logo Igreja Batista Nova Família">
+<div class="brand-copy">
+<small>Igreja Batista</small>
+<strong>Nova Família</strong>
+</div>
+</div>
+<nav class="desktop-nav" aria-label="Navegação principal">
+<button data-view="inicio">Início</button>
+<button data-view="quem-somos">Quem somos</button>
+<button data-view="agenda">Programação</button>
+<button data-view="estudos">Estudos</button>
+<button data-view="midia">Fotos e vídeos</button>
+<button data-view="redes">Contato</button>
+</nav>
+<div class="header-actions">
+<button class="login-link" data-view="perfil">Área da equipe</button>
+<button id="installBtn" class="install-btn site-install-btn" hidden>Instalar</button>
+<button id="siteMenuToggle" class="site-menu-toggle" type="button" aria-expanded="false" aria-controls="siteMobileMenu" aria-label="Abrir menu">☰</button>
+</div>
+</div>
+<nav id="siteMobileMenu" class="site-mobile-menu" aria-label="Menu do site" hidden>
+<button data-view="inicio">Início</button><button data-view="quem-somos">Quem somos</button><button data-view="agenda">Programação</button><button data-view="estudos">Estudos</button><button data-view="midia">Fotos e vídeos</button><button data-view="redes">Contato e redes sociais</button><button class="site-team-link" data-view="perfil">Área da equipe</button>
+</nav>
+</header>
+<main>
+<div id="homeDashboard">
+<section class="hero-band hero-compact">
+<div class="hero-inner">
+<div class="hero-copy">
+<span class="hero-kicker">Site oficial da igreja</span>
+<h1>IB Nova Família</h1>
+<p>Uma igreja para toda a família. Conheça nossa programação, acompanhe os eventos e caminhe conosco.</p>
+<div class="hero-actions">
+<button class="hero-primary" data-view="agenda">Ver agenda</button>
+<button class="hero-secondary" data-view="notificacoes">Últimos avisos</button>
+</div>
+</div>
+<div class="hero-visual">
+<div class="hero-logo-card">
+<img src="photo_5143638454599093943_y.jpg" alt="Logo oficial IB Nova Família">
+</div>
+</div>
+</div>
+</section>
+<div class="app-main home-main">
+<section class="home-welcome">
+<div>
+<span class="section-kicker">Acesso rápido</span>
+<h2>O que você procura hoje?</h2>
+<p>As funções mais usadas ficam logo aqui.</p>
+</div>
+<button class="outline-action" data-view="menu">Menu completo</button>
+</section>
+<section class="daily-word" aria-labelledby="dailyWordTitle">
+<div class="daily-word-mark" aria-hidden="true">“</div>
+<div class="daily-word-copy">
+<span class="section-kicker">Palavra para hoje</span>
+<blockquote id="dailyWordText">Carregando o versículo do dia...</blockquote>
+<strong id="dailyWordReference"></strong>
+</div>
+<button id="shareDailyWord" class="daily-word-share" type="button">Compartilhar versículo</button>
+</section>
+<section class="featured-events-area" aria-labelledby="featuredEventsTitle">
+<div class="featured-events-heading"><div><span class="section-kicker">Fique por dentro</span><h2 id="featuredEventsTitle">Próximos eventos</h2></div><button id="addFeaturedEventHome" class="outline-action" type="button" hidden>+ Adicionar evento</button></div>
+<div id="homeCampaignList" class="featured-events-list"><div class="data-loading">Carregando próximos eventos...</div></div>
+</section>
+<section class="quick-grid" aria-label="Acessos rápidos">
+<button class="quick-card" data-view="agenda">
+<span class="quick-icon">▦</span>
+<strong>Agenda</strong>
+<small>Próximos cultos e eventos</small>
+</button>
+<button class="quick-card" data-view="notificacoes">
+<span class="quick-icon">♢</span>
+<strong>Avisos</strong>
+<small>Comunicados da igreja</small>
+</button>
+<button class="quick-card quick-featured" data-view="oracao">
+<span class="quick-icon">♡</span>
+<strong>Pedido de oração</strong>
+<small>Envie seu pedido</small>
+</button>
+<button class="quick-card" data-view="visitas">
+<span class="quick-icon">⌂</span>
+<strong>Solicitar visita</strong>
+<small>Peça acompanhamento</small>
+</button>
+<button class="quick-card" data-view="servir">
+<span class="quick-icon">✦</span>
+<strong>Quero servir</strong>
+<small>Participe de uma equipe</small>
+</button>
+<button class="quick-card" data-view="falar">
+<span class="quick-icon">◉</span>
+<strong>Falar com a igreja</strong>
+<small>WhatsApp oficial</small>
+</button>
+</section>
+<section class="next-section">
+<div class="section-title-row">
+<div>
+<span class="section-kicker">Agenda</span>
+<h2>Próximos 7 dias</h2>
+</div>
+<button class="calendar-btn" data-view="agenda">Ver calendário</button>
+</div>
+<div id="nextEvents" class="events-box">
+</div>
+</section>
+<section class="home-care">
+<div class="home-section-head">
+<span class="section-kicker">Cuidado e participação</span>
+<h2>Estamos aqui para você</h2>
+</div>
+<div class="care-grid">
+<button class="care-card" data-view="visitante">
+<span>☺</span>
+<div>
+<strong>Sou visitante</strong>
+<small>Queremos conhecer você</small>
+</div>
+<b>›</b>
+</button>
+<button class="care-card" data-view="redes">
+<span>@</span>
+<div>
+<strong>Redes sociais</strong>
+<small>Acompanhe nossos canais</small>
+</div>
+<b>›</b>
+</button>
+<button class="care-card" data-view="estudos">
+<span>▤</span>
+<div>
+<strong>Estudos</strong>
+<small>Materiais e séries</small>
+</div>
+<b>›</b>
+</button>
+</div>
+</section>
+<section class="support-section">
+<div class="support-copy">
+<span class="section-kicker">Faça parte</span>
+<h2>Contribua com esta obra</h2>
+<p>Se esta obra tem abençoado sua vida e você deseja fazer parte do que Deus está realizando, sua contribuição nos ajuda a continuar levando a Palavra, cuidando de pessoas e alcançando novas vidas.</p>
+<button class="support-btn" type="button" data-support-open>Quero contribuir</button>
+</div>
+<div class="support-mark" aria-hidden="true">♡</div>
+</section>
+<section class="section-block resources-section">
+<div class="section-title-row">
+<div>
+<span class="section-kicker">Recursos</span>
+<h2>Áreas da igreja</h2>
+</div>
+<button class="calendar-btn" data-view="menu">Ver todos</button>
+</div>
+<div class="resource-groups" id="moduleGrid">
+<section class="resource-group" aria-labelledby="resourceManagementTitle">
+<div class="resource-group-heading">
+<div>
+<span class="section-kicker">Administração</span>
+<h3 id="resourceManagementTitle">Gestão e cuidado</h3>
+</div>
+<p>Cadastros, acompanhamento e tesouraria</p>
+</div>
+<div class="module-grid">
+<button class="module-card" data-view="secretaria" hidden aria-hidden="true">
+<span class="icon-wrap">✎</span>
+<span class="module-copy">
+<strong>Secretaria</strong>
+<small>Membros, agenda, avisos e estudos</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="pastoral">
+<span class="icon-wrap">✦</span>
+<span class="module-copy">
+<strong>Painel Pastoral</strong>
+<small>Atendimentos e pendências</small>
+</span>
+<em class="new-badge">Novo</em>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="pessoas">
+<span class="icon-wrap">
+<svg class="module-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+</span>
+<span class="module-copy">
+<strong>Pessoas</strong>
+<small>Membros e visitantes</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="financeiro">
+<span class="icon-wrap">$</span>
+<span class="module-copy">
+<strong>Financeiro</strong>
+<small>Tesouraria e relatórios</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="estatisticas" hidden aria-hidden="true"><span class="icon-wrap">↗</span><span class="module-copy"><strong>Estatísticas</strong><small>Visitantes e páginas acessadas</small></span><span class="chevron">›</span></button>
+</div>
+</section>
+
+<section class="resource-group" aria-labelledby="resourceMinistriesTitle">
+<div class="resource-group-heading">
+<div>
+<span class="section-kicker">Participação</span>
+<h3 id="resourceMinistriesTitle">Ministérios e conteúdo</h3>
+</div>
+<p>Equipes, comunhão e formação cristã</p>
+</div>
+<div class="module-grid">
+<button class="module-card" data-view="departamentos">
+<span class="icon-wrap">⌘</span>
+<span class="module-copy">
+<strong>Departamentos</strong>
+<small>Ministérios e equipes</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="grupos">
+<span class="icon-wrap">▦</span>
+<span class="module-copy">
+<strong>Grupos</strong>
+<small>Comunhão e células</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="estudos">
+<span class="icon-wrap">▤</span>
+<span class="module-copy">
+<strong>Estudos</strong>
+<small>Materiais e séries</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="kids">
+<span class="icon-wrap">☺</span>
+<span class="module-copy">
+<strong>Kids</strong>
+<small>Ministério infantil</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="aniversariantes">
+<span class="icon-wrap">☆</span>
+<span class="module-copy">
+<strong>Aniversariantes</strong>
+<small>Datas especiais</small>
+</span>
+<span class="chevron">›</span>
+</button>
+</div>
+</section>
+
+<section class="resource-group" aria-labelledby="resourceCommunicationTitle">
+<div class="resource-group-heading">
+<div>
+<span class="section-kicker">Comunicação</span>
+<h3 id="resourceCommunicationTitle">Mídia e informações</h3>
+</div>
+<p>Avisos, canais e materiais da igreja</p>
+</div>
+<div class="module-grid">
+<button class="module-card" data-view="avisos-admin" hidden aria-hidden="true">
+<span class="icon-wrap">♢</span>
+<span class="module-copy">
+<strong>Gerenciar avisos</strong>
+<small>Criar, editar e publicar comunicados</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="push-notifications">
+<span class="icon-wrap">
+<svg class="module-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+</span>
+<span class="module-copy">
+<strong>Alertas de aniversário</strong>
+<small>Ative os avisos neste celular</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="midia">
+<span class="icon-wrap">▣</span>
+<span class="module-copy">
+<strong>Equipe de Mídia</strong>
+<small>Equipe e materiais do Google Drive</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="fotos">
+<span class="icon-wrap">▣</span>
+<span class="module-copy">
+<strong>Galeria de Fotos</strong>
+<small>Álbuns da igreja</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="videos">
+<span class="icon-wrap">▶</span>
+<span class="module-copy">
+<strong>Vídeos dos Cultos</strong>
+<small>Cultos e outros conteúdos</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="arquivos">
+<span class="icon-wrap">▱</span>
+<span class="module-copy">
+<strong>Documentos Oficiais</strong>
+<small>Arquivos e documentos da igreja</small>
+</span>
+<span class="chevron">›</span>
+</button>
+<button class="module-card" data-view="redes">
+<span class="icon-wrap">@</span>
+<span class="module-copy">
+<strong>Redes Sociais</strong>
+<small>Instagram e canais oficiais</small>
+</span>
+<span class="chevron">›</span>
+</button>
+</div>
+</section>
+</div>
+</section>
+</div>
+</div>
+<div class="app-main panel-main">
+<section id="contentPanel" class="content-panel hidden">
+</section>
+</div>
+</main>
+<footer class="site-footer">
+<div class="site-footer-inner">
+<div class="site-footer-brand"><img src="photo_5143638454599093943_y.jpg" alt="Logo IB Nova Família"><div><strong>Igreja Batista Nova Família</strong><span>Parque São Bento · Sorocaba/SP</span></div></div>
+<div class="site-footer-column"><strong>Programação</strong><span>Domingo · EBD às 9h</span><span>Domingo · Culto da Família às 19h</span><span>Quarta e sexta · 19h30</span></div>
+<div class="site-footer-column"><strong>Encontre-nos</strong><button data-view="redes">Contato e redes sociais</button><button data-view="agenda">Ver programação</button><button data-view="perfil">Área da equipe</button></div>
+</div>
+<div class="site-footer-bottom">© Igreja Batista Nova Família · Todos os direitos reservados</div>
+</footer>
+<nav class="bottom-nav">
+<button data-view="menu">
+<span class="nav-icon">☰</span>
+<small>Menu</small>
+</button>
+<button data-view="inicio" class="active">
+<span class="nav-icon">⌂</span>
+<small>Início</small>
+</button>
+<button data-view="notificacoes">
+<span class="nav-icon">♢</span>
+<small>Avisos</small>
+</button>
+<button data-view="perfil">
+<span class="nav-icon profile-nav-icon">
+<svg class="nav-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>
+</span>
+<small>Perfil</small>
+</button>
+</nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+<script src="config.js">
+</script>
+<script src="app.js">
+</script>
+<script src="members-admin.js">
+</script>
+<script src="birthdays.js">
+</script>
+<script src="community-data.js">
+</script>
+<script src="pastoral-dashboard.js">
+</script>
+<script src="device-lock.js">
+</script>
+<script src="access-control.js">
+</script>
+<script src="pastoral-home.js">
+</script>
+<script src="financeiro.js">
+</script>
+<script src="acolhimento.js">
+</script>
+<script src="navigation-behavior.js">
+</script>
+<script src="menu-functional.js">
+</script>
+<script src="home-organizada.js">
+</script>
+<script src="evento-destaque.js">
+</script>
+<script src="avisos-admin.js">
+</script>
+<script src="agenda-admin.js">
+</script>
+<script src="estudos-admin.js">
+</script>
+<script src="departamentos-admin.js">
+</script>
+<script src="midia.js">
+</script>
+<script src="fotos.js">
+</script>
+<script src="secretaria-dashboard.js">
+</script>
+<script src="push-notifications.js">
+</script>
+<script src="quem-somos.js">
+</script>
+<script src="app-history.js">
+</script>
+<script src="estatisticas.js"></script>
+<script src="versiculo-diario.js"></script>
+<script src="site-institucional.js"></script>
+  <script src="finance-access-fix.js"></script>
+</body>
+</html>
 <button class="module-card" data-view="pessoas">
 <span class="icon-wrap">
 <svg class="module-icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
