@@ -8,7 +8,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="IB Nova Família">
-<title>IB Nova Família</title>
+<title>Igreja Batista Nova Família | Sorocaba</title>
+<meta name="description" content="Uma igreja para toda a família no Parque São Bento, Sorocaba. Conheça nossos cultos, eventos e estudos bíblicos e fale com a igreja.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -75,28 +76,41 @@
 <div class="hero-inner">
 <div class="hero-copy">
 <span class="hero-kicker">Site oficial da igreja</span>
-<h1>IB Nova Família</h1>
-<p>Uma igreja para toda a família. Conheça nossa programação, acompanhe os eventos e caminhe conosco.</p>
+<h1>Uma igreja para<br>toda a família.</h1>
+<p>Seja bem-vindo à Igreja Batista Nova Família, no Parque São Bento, em Sorocaba. Venha celebrar e caminhar conosco.</p>
 <div class="hero-actions">
-<button class="hero-primary" data-view="agenda">Ver agenda</button>
-<button class="hero-secondary" data-view="notificacoes">Últimos avisos</button>
+<a class="hero-primary" href="https://www.google.com/maps/search/?api=1&amp;query=Igreja+Batista+Nova+Fam%C3%ADlia+Parque+S%C3%A3o+Bento+Sorocaba" target="_blank" rel="noopener noreferrer">Como chegar</a>
+<a class="hero-secondary" href="https://wa.me/5515991570784" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
+<button class="hero-secondary" data-view="quem-somos">Conheça a igreja</button>
 </div>
 </div>
 <div class="hero-visual">
-<div class="hero-logo-card">
-<img src="photo_5143638454599093943_y.jpg" alt="Logo oficial IB Nova Família">
-</div>
+<aside class="welcome-service" aria-label="Próximo culto">
+<span class="section-kicker">Esperamos por você</span>
+<h2>Nosso próximo encontro</h2>
+<div id="welcomeNextService" aria-live="polite">Consulte nossa programação</div>
+<button class="hero-primary" data-view="agenda">Ver programação completa</button>
+</aside>
 </div>
 </div>
 </section>
 <div class="app-main home-main">
-<section class="home-welcome">
+<section class="next-section">
+<div class="section-title-row">
 <div>
-<span class="section-kicker">Acesso rápido</span>
-<h2>O que você procura hoje?</h2>
-<p>As funções mais usadas ficam logo aqui.</p>
+<span class="section-kicker">Agenda</span>
+<h2>Próximos 7 dias</h2>
 </div>
-<button class="outline-action" data-view="menu">Menu completo</button>
+<button class="calendar-btn" data-view="agenda">Ver calendário</button>
+</div>
+<div id="nextEvents" class="events-box">
+</div>
+</section>
+
+
+<section class="featured-events-area" aria-labelledby="featuredEventsTitle">
+<div class="featured-events-heading"><div><span class="section-kicker">Fique por dentro</span><h2 id="featuredEventsTitle">Próximos eventos</h2></div><button id="addFeaturedEventHome" class="outline-action" type="button" hidden>+ Adicionar evento</button></div>
+<div id="homeCampaignList" class="featured-events-list"><div class="data-loading">Carregando próximos eventos...</div></div>
 </section>
 <section class="daily-word" aria-labelledby="dailyWordTitle">
 <div class="daily-word-mark" aria-hidden="true">“</div>
@@ -107,15 +121,11 @@
 </div>
 <button id="shareDailyWord" class="daily-word-share" type="button">Compartilhar versículo</button>
 </section>
-<section class="featured-events-area" aria-labelledby="featuredEventsTitle">
-<div class="featured-events-heading"><div><span class="section-kicker">Fique por dentro</span><h2 id="featuredEventsTitle">Próximos eventos</h2></div><button id="addFeaturedEventHome" class="outline-action" type="button" hidden>+ Adicionar evento</button></div>
-<div id="homeCampaignList" class="featured-events-list"><div class="data-loading">Carregando próximos eventos...</div></div>
-</section>
 <section class="quick-grid" aria-label="Acessos rápidos">
 <button class="quick-card" data-view="agenda">
 <span class="quick-icon">▦</span>
 <strong>Agenda</strong>
-<small>Próximos cultos e eventos</small>
+<small>Todos os cultos e eventos</small>
 </button>
 <button class="quick-card" data-view="notificacoes">
 <span class="quick-icon">♢</span>
@@ -143,17 +153,7 @@
 <small>WhatsApp oficial</small>
 </button>
 </section>
-<section class="next-section">
-<div class="section-title-row">
-<div>
-<span class="section-kicker">Agenda</span>
-<h2>Próximos 7 dias</h2>
-</div>
-<button class="calendar-btn" data-view="agenda">Ver calendário</button>
-</div>
-<div id="nextEvents" class="events-box">
-</div>
-</section>
+
 <section class="home-care">
 <div class="home-section-head">
 <span class="section-kicker">Cuidado e participação</span>
@@ -176,14 +176,7 @@
 </div>
 <b>›</b>
 </button>
-<button class="care-card" data-view="estudos">
-<span>▤</span>
-<div>
-<strong>Estudos</strong>
-<small>Materiais e séries</small>
-</div>
-<b>›</b>
-</button>
+
 </div>
 </section>
 <section class="support-section">

@@ -14,6 +14,31 @@
     syncDashboard();
   }
 
+
+  // Reuse the rendered agenda so this highlight follows its live updates.
+  const agenda = document.querySelector('#nextEvents');
+  const nextService = document.querySelector('#welcomeNextService');
+  if (agenda && nextService) {
+    const updateNextService = () => {
+      const first = agenda.querySelector('.event-item');
+      const title = first?.querySelector('.event-title b');
+      const date = first?.querySelector('.event-date');
+      const time = first?.querySelector('.event-title span');
+      nextService.replaceChildren();
+      if (!title || !date || !time) {
+        nextService.textContent = 'Veja os horários na programação abaixo.';
+        return;
+      }
+      const name = document.createElement('strong');
+      name.textContent = title.textContent;
+      const when = document.createElement('p');
+      when.textContent = Array.from(date.children, el => el.textContent.trim()).join(' ') + ' · ' + time.textContent.replace('🕒', '').trim();
+      nextService.append(name, when);
+    };
+    new MutationObserver(updateNextService).observe(agenda, {childList: true, subtree: true, characterData: true});
+    updateNextService();
+  }
+
   const PIX = '59879785000161';
   const supportButton = document.querySelector('[data-support-open]');
 
