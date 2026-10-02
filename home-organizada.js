@@ -20,10 +20,10 @@
   const nextService = document.querySelector('#welcomeNextService');
   if (agenda && nextService) {
     const updateNextService = () => {
-      const first = agenda.querySelector('.event-item');
-      const title = first?.querySelector('.event-title b');
-      const date = first?.querySelector('.event-date');
-      const time = first?.querySelector('.event-title span');
+      const first = agenda.querySelector('.agenda-event, .event-item');
+      const title = first?.querySelector('.agenda-event-copy b, .event-title b');
+      const date = first?.querySelector('.agenda-event-date, .event-date');
+      const time = first?.querySelector('.agenda-event-copy span, .event-title span');
       nextService.replaceChildren();
       if (!title || !date || !time) {
         nextService.textContent = 'Veja os horários na programação abaixo.';
@@ -162,3 +162,4 @@
     )
     .subscribe();
 })();
+
