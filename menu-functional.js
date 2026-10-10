@@ -4,19 +4,12 @@
   function openMenu(){
     if(typeof window.openPanel!=='function')return;
     window.setNav?.('menu');
-    const noticesAdmin=window.IBNF_ACCESS?.can?.('avisos-admin')?`<button class="menu-action" onclick="showView('avisos-admin')"><b>Gerenciar avisos</b><small>Crie, edite e publique comunicados para toda a igreja.</small><span>›</span></button>`:'';
-    const statistics=window.IBNF_ACCESS?.can?.('estatisticas')?`<button class="menu-action" onclick="showView('estatisticas')"><b>Estatísticas</b><small>Veja visitantes, acessos e páginas mais procuradas.</small><span>›</span></button>`:'';
-    window.openPanel('Menu',`<div class="menu-action-list">
-      <button class="menu-action" onclick="showView('quem-somos')"><b>Quem Somos</b><small>Conheça nossa história, missão e liderança pastoral.</small><span>›</span></button>
-      ${noticesAdmin}
-      ${statistics}
-      <button class="menu-action" onclick="showView('acessos')"><b>Administração</b><small>Usuários, aprovações, permissões e acessos da equipe.</small><span>›</span></button>
-      <button class="menu-action" onclick="showView('perfil')"><b>Minha conta</b><small>Login, perfil e acesso ao sistema.</small><span>›</span></button>
-      <button class="menu-action" onclick="showView('redes')"><b>Redes Sociais</b><small>Instagram, Facebook e WhatsApp oficiais da igreja.</small><span>›</span></button>
-      <button class="menu-action" onclick="showView('agenda')"><b>Agenda</b><small>Veja a programação e os próximos cultos.</small><span>›</span></button>
-      <button class="menu-action" onclick="showView('midia')"><b>Equipe de Mídia</b><small>Equipe e materiais compartilhados pelo Google Drive.</small><span>›</span></button>
-      <button class="menu-action" onclick="showView('notificacoes')"><b>Avisos</b><small>Comunicados oficiais da igreja.</small><span>›</span></button>
-    </div>`);
+    const item=(view,title,description)=>`<button class="menu-action" onclick="showView('${view}')"><b>${title}</b><small>${description}</small><span>›</span></button>`;
+    const publicItems=[['quem-somos','Quem somos','Nossa história e liderança.'],['agenda','Agenda','Cultos e próximos eventos.'],['estudos','Estudos','Materiais para aprender a Palavra.'],['fotos','Fotos da igreja','Álbuns dos nossos encontros.'],['notificacoes','Avisos','Comunicados da igreja.'],['aniversariantes','Aniversariantes','Datas especiais da nossa família.'],['redes','Contato','WhatsApp e redes sociais.']];
+    const teamItems=[['financeiro','Financeiro','Tesouraria e relatórios.'],['secretaria','Secretaria','Cadastros e organização da igreja.'],['pessoas','Pessoas','Membros e visitantes.'],['pastoral','Painel pastoral','Atendimentos e pendências.'],['avisos-admin','Gerenciar avisos','Publicar comunicados.'],['estatisticas','Estatísticas','Acessos ao site.'],['acessos','Gerenciar acessos','Aprovações e permissões.']].filter(([view])=>window.IBNF_ACCESS?.can?.(view));
+    const approved=window.IBNF_ACCESS?.isApproved?.();
+    const teamExtra=approved?[['departamentos','Departamentos','Equipes e ministérios.'],['midia','Equipe de mídia','Materiais e arquivos da equipe.']]:[];
+    window.openPanel('Menu',`<div class="menu-action-list">${publicItems.map(args=>item(...args)).join('')}</div><h3>Área da equipe</h3><div class="menu-action-list">${item('perfil','Minha conta','Entrar ou consultar seu acesso.')}${[...teamItems,...teamExtra].map(args=>item(...args)).join('')}</div>`);
     scrollPanel();
   }
   window.showView=function(view){
