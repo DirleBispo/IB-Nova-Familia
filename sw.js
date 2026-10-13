@@ -1,4 +1,4 @@
-const CACHE='ibnf-camera-documentos-v48';
+const CACHE='ibnf-fechamento-v49';
 const ASSETS=[
   './',
   './index.html',
