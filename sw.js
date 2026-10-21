@@ -1,4 +1,4 @@
-const CACHE='ibnf-fechamento-v49';
+const CACHE='ibnf-sem-financeiro-v50';
 const ASSETS=[
   './',
   './index.html',
@@ -41,8 +41,6 @@ const ASSETS=[
   './access-control.js',
   './pastoral-home.css',
   './pastoral-home.js',
-  './financeiro.css',
-  './financeiro.js',
   './acolhimento.css',
   './acolhimento.js',
   './navigation-behavior.js',

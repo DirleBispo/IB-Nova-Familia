@@ -5,12 +5,13 @@
   let session=null,profile=null,refreshing=false,refreshAgain=false;
 
   function defaults(perfil){
-    if(perfil==='admin'||perfil==='pastor')return {pastoral:true,pessoas:true,financeiro:true,estatisticas:true,acessos:true,avisos:true,secretaria:true};
-    if(perfil==='tesouraria')return {pastoral:false,pessoas:false,financeiro:true,acessos:false,avisos:false,secretaria:false};
+    if(perfil==='admin'||perfil==='pastor')return {pastoral:true,pessoas:true,financeiro:false,estatisticas:true,acessos:true,avisos:true,secretaria:true};
+    if(perfil==='tesouraria')return {pastoral:false,pessoas:false,financeiro:false,acessos:false,avisos:false,secretaria:false};
     if(perfil==='secretaria')return {pastoral:false,pessoas:true,financeiro:false,acessos:false,avisos:true,secretaria:true};
     return {pastoral:false,pessoas:false,financeiro:false,acessos:false,avisos:false,secretaria:false};
   }
   function can(view){
+    if(view==='financeiro')return false;
     if(!session||!profile?.ativo)return false;
     const permission=view==='avisos-admin'?'avisos':view;
     const d=defaults(profile.perfil),p=profile.permissoes||{};
