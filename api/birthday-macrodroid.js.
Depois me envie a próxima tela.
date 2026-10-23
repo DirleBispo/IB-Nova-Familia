@@ -1,0 +1,84 @@
+
+import { adminFetch } from './_supabase.js';
+
+export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Método não permitido' });
+  }
+
+  // Token exclusivo para o MacroDroid.
+  // Nunca utilizar a chave do Supabase no celular.
+  const secret = process.env.MACRODROID_BIRTHDAY_TOKEN;
+
+  if (!secret) {
+    return res.status(503).json({ error: 'Integração não configurada' });
+  }
+
+  if (req.headers.authorization !== `Bearer ${secret}`) {
+    return res.status(401).json({ error: 'Não autorizado' });
+  }
+
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Sao_Paulo',
+      month: '2-digit',
+      day: '2-digit'
+    }).formatToParts(new Date());
+
+    const month = parts.find(p => p.type === 'month').value;
+    const day = parts.find(p => p.type === 'day').value;
+    const today = `${month}-${day}`;
+
+    const result = await adminFetch(
+      'pessoas?ativo=eq.true&tipo=eq.membro&nascimento=not.is.null&select=nome,nascimento'
+    );
+
+    if (!result.ok) {
+      throw new Error('Erro na consulta ao cadastro');
+    }
+
+    const people = await result.json();
+
+    const names = people
+      .filter(p => String(p.nascimento).slice(5) === today)
+      .map(p => String(p.nome || '').trim())
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+    if (names.length === 0) {
+      return res.status(200).json({
+        hasBirthday: false,
+        count: 0,
+        message: ''
+      });
+    }
+
+    const namesText = names.length === 1
+      ? names[0]
+      : `${names.slice(0, -1).join(', ')} e ${names.at(-1)}`;
+
+    const message = `🎉 Graça e paz, irmãos!
+
+Hoje celebramos com alegria o aniversário de ${namesText}! 🎂
+
+Que o Senhor abençoe ${names.length === 1 ? 'sua vida' : 'suas vidas'} com saúde, paz, sabedoria e muitos anos em Sua presença.
+
+📖 "O Senhor te abençoe e te guarde." — Números 6:24
+
+Com carinho,
+Igreja Batista Nova Família ❤️`;
+
+    return res.status(200).json({
+      hasBirthday: true,
+      count: names.length,
+      message
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Não foi possível consultar os aniversariantes'
+    });
+  }
+}
