@@ -19,6 +19,17 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Não autorizado' });
   }
 
+  // Simulação protegida: não cria nem altera aniversários reais.
+  // Use ?teste=1 apenas durante a conferência no Automate.
+  if (req.query?.teste === '1') {
+    return res.status(200).json({
+      hasBirthday: true,
+      count: 1,
+      test: true,
+      message: '🧪 TESTE — NÃO ENCAMINHAR\n\n🎉 Graça e paz, irmãos!\n\nHoje celebramos com alegria o aniversário de Aniversariante de Teste! 🎂\n\nQue o Senhor abençoe sua vida com saúde, paz, sabedoria e muitos anos em Sua presença.\n\n📖 "O Senhor te abençoe e te guarde." — Números 6:24\n\nCom carinho,\nIgreja Batista Nova Família ❤️\n\n🧪 Mensagem fictícia para verificar a automação.'
+    });
+  }
+
   try {
     const parts = new Intl.DateTimeFormat('en-US', {
       timeZone: 'America/Sao_Paulo',
