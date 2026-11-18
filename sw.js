@@ -1,4 +1,4 @@
-const CACHE='ibnf-sem-financeiro-v50';
+const CACHE='ibnf-sem-financeiro-v51';
 const ASSETS=[
   './',
   './index.html',
