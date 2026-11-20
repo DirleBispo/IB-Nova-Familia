@@ -59,11 +59,13 @@
       <section class="toolbar" aria-label="Filtros">
         <label class="search-field"><span>Pesquisar</span><input id="searchInput" type="search" placeholder="Nome, telefone ou e-mail"></label>
         <label><span>Tipo</span><select id="typeFilter"><option value="">Todos</option><option value="membro">Membros</option><option value="visitante">Visitantes</option></select></label>
-        <label><span>Situação</span><select id="statusFilter"><option value="active">Ativos</option><option value="review">Para revisar</option><option value="archived">Arquivados</option><option value="all">Todos</option></select></label>
+        <label><span>Situação</span><select id="statusFilter"><option value="all">Todos</option><option value="active">Ativos</option><option value="review">Para revisar</option><option value="archived">Arquivados</option></select></label>
+        <button id="refreshButton" class="secondary" type="button">Atualizar cadastros</button>
         <button id="exportButton" class="secondary" type="button">Exportar para Excel</button>
       </section>
 
       <div id="pageMessage" class="message" aria-live="polite"></div>
+      <p id="visibleCount" class="message" aria-live="polite"></p>
       <section id="peopleList" class="people-list" aria-live="polite"></section>
       <p id="emptyState" class="empty" hidden>Nenhum cadastro encontrado.</p>
     </main>
@@ -105,6 +107,6 @@
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20261120c"></script>
 </body>
 </html>
