@@ -61,6 +61,7 @@
     $('statVisitors').textContent=people.filter(p=>p.ativo&&p.tipo==='visitante').length;
     $('statReview').textContent=people.filter(p=>p.ativo&&p.status_revisao==='REVISAR').length;
     $('peopleList').innerHTML=visible.map(person=>`<article class="person-row ${person.ativo?'':'archived-row'}"><div><div class="person-name">${esc(person.nome)}</div><div class="badges"><span class="badge">${person.tipo==='visitante'?'Visitante':'Membro'}</span>${person.status_revisao==='REVISAR'?'<span class="badge review">Revisar dados</span>':''}${person.ativo?'':'<span class="badge archived">Arquivado</span>'}</div></div><div class="person-meta"><span>${esc(formatDate(person.nascimento))}</span><span>${esc(person.cargo_funcao||'Sem função informada')}</span></div><div class="person-contact"><span>${esc(formatPhone(person.telefone))}</span><span>${esc(person.email||'E-mail não informado')}</span></div><button class="edit-button" type="button" data-edit="${person.id}">Editar</button></article>`).join('');
+    if($('visibleCount'))$('visibleCount').textContent=`Exibindo ${visible.length} de ${people.length} cadastros`;
     $('emptyState').hidden=visible.length>0;
     document.querySelectorAll('[data-edit]').forEach(button=>button.addEventListener('click',()=>openForm(people.find(p=>p.id===button.dataset.edit))));
   }
@@ -107,5 +108,6 @@
   $('closeDialogButton').addEventListener('click',closeForm);$('cancelButton').addEventListener('click',closeForm);
   $('personForm').addEventListener('submit',savePerson);$('archiveButton').addEventListener('click',toggleArchive);
   $('searchInput').addEventListener('input',render);$('typeFilter').addEventListener('change',render);$('statusFilter').addEventListener('change',render);$('exportButton').addEventListener('click',exportCsv);
+  if($('refreshButton'))$('refreshButton').addEventListener('click',loadPeople);
   sb.auth.getSession().then(({data})=>{if(data.session)enterApp(data.session)});
 })();
